@@ -3,6 +3,7 @@ import AuthCard from './ui/AuthCard';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SigninSchema, signinSchema } from '../utils/validators';
+import { PRIMARY_COLOR } from '../utils/theme';
 
 function Signin() {
 
@@ -20,21 +21,21 @@ function Signin() {
       description="Entra nel tuo account per utilizzare al meglio quest'app!" 
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <VStack w="full" alignItems="start" spacing={2}>
+        <VStack alignItems="start" spacing={2}>
 
           <FormControl isInvalid={touchedFields.email && !!errors.email}>
             <FormLabel>Email</FormLabel>
-            <Input {...register('email')} focusBorderColor='primary.600' />
+            <Input {...register('email')} focusBorderColor={`${PRIMARY_COLOR}.600`} />
             <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
           </FormControl>
 
           <FormControl isInvalid={touchedFields.password && !!errors.password}>
             <FormLabel>Password</FormLabel>
-            <Input {...register('password')} focusBorderColor='primary.600' type='password' />
+            <Input {...register('password')} focusBorderColor={`${PRIMARY_COLOR}.600`} type='password' />
             <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
           </FormControl>
 
-          <Button mt={2} type='submit' colorScheme='primary'>Signin</Button>
+          <Button mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Signin</Button>
         </VStack>
       </form>
     </AuthCard>

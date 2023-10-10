@@ -9,11 +9,11 @@ interface AuthCardProps {
 
 function AuthCard({ children, title, description }: AuthCardProps) {
   return (
-    <VStack alignItems="start" spacing={4} border="1px" borderColor="gray.100" shadow="sm" rounded="lg" p={4}>
+    <VStack alignItems="start" spacing={4} border="1px" borderColor="slate.100" shadow="sm" rounded="lg" p={4}>
       
       <VStack alignItems="start" spacing={1}>
         <Heading>{title}</Heading>
-        <Text color="gray.500">
+        <Text color="slate.500">
           {description}
         </Text>
       </VStack>

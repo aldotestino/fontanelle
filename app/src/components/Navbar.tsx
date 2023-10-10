@@ -11,14 +11,14 @@ function Navbar() {
 
   return (
     <Box px={4} w="full" maxW="container.sm" left="50%" style={{ transform: 'translateX(-50%)' }} position="fixed" bottom={4}>
-      <HStack w="full" py={2} justifyContent="space-around" bg="gray.100" rounded="2xl" shadow="sm">
+      <HStack w="full" py={2} justifyContent="space-around" bg="slate.50" border="1px" borderColor="slate.100" rounded="2xl" shadow="sm">
         
-        <VStack cursor="pointer" className='nav-button' onClick={() => navigate('/')} color={location.pathname === '/' ? 'gray.900' : 'gray.500'}>
+        <VStack spacing={0} cursor="pointer" className='nav-button' onClick={() => navigate('/')} color={location.pathname === '/' ? 'slate.900' : 'slate.500'}>
           <Icon as={MapIcon} w={9} h={9} />
           <Text fontWeight="semibold" fontSize="lg">Mappa</Text>
         </VStack>
 
-        <VStack cursor="pointer" className='nav-button' onClick={() => navigate('/profile')} color={location.pathname === '/profile' ? 'gray.900' : 'gray.500'}>
+        <VStack spacing={0} cursor="pointer" className='nav-button' onClick={() => navigate('/profile')} color={location.pathname === '/profile' ? 'slate.900' : 'slate.500'}>
           <Icon as={UserCircleIcon} w={9} h={9} />
           <Text fontWeight="semibold" fontSize="lg">Profilo</Text>
         </VStack>
