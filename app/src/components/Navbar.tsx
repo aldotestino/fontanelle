@@ -7,8 +7,6 @@ function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log(location);
-
   return (
     <Box px={4} w="full" maxW="container.sm" left="50%" style={{ transform: 'translateX(-50%)' }} position="fixed" bottom={4}>
       <HStack w="full" py={2} justifyContent="space-around" bg="slate.50" border="1px" borderColor="slate.100" rounded="2xl" shadow="sm">
