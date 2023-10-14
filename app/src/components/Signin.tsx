@@ -18,7 +18,7 @@ function Signin() {
 
   return (
     <AuthCard 
-      title='Signin' 
+      title='Accedi' 
       description="Entra nel tuo account per utilizzare al meglio quest'app!" 
     >
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -36,7 +36,7 @@ function Signin() {
             register={register('password')}
             type='password'
           />
-          <Button mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Signin</Button>
+          <Button mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Continua</Button>
         </VStack>
       </form>
     </AuthCard>

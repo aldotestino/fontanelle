@@ -18,7 +18,7 @@ function Signup() {
 
   return (
     <AuthCard 
-      title='Signup' 
+      title='Registrati' 
       description='Crea un account per aggiungere e valutare fontanelle nel mondo!' 
     >
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -52,7 +52,7 @@ function Signup() {
             register={register('password')}
             type='password'
           />
-          <Button mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Signup</Button>
+          <Button mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Continua</Button>
         </VStack>
       </form>
     </AuthCard>

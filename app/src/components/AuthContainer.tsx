@@ -9,8 +9,8 @@ function AuthContainer({ ...boxProps }: BoxProps) {
     <Box {...boxProps} maxW="md" w="full">
       <Tabs variant="unstyled" defaultIndex={1}>
         <CustomTabList>
-          <CustomTab>Signup</CustomTab>
-          <CustomTab>Signin</CustomTab>
+          <CustomTab>Registrati</CustomTab>
+          <CustomTab>Accedi</CustomTab>
         </CustomTabList>
         <TabPanels>
           <TabPanel p={0} mt={4}>
