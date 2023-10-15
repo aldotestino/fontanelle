@@ -83,7 +83,8 @@ func Signin(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("token", tokenString, 3600*24*30, "", "", os.Getenv("PRODUCTION") == "true", true)
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("token", tokenString, 3600*24*30, "", "http://192.168.1.52:5173", os.Getenv("PRODUCTION") == "true", true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"name":    user.Name,

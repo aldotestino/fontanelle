@@ -6,7 +6,7 @@ import Signin from './Signin';
 
 function AuthContainer({ ...boxProps }: BoxProps) {
   return (
-    <Box {...boxProps} maxW="md" w="full">
+    <Box px={4} {...boxProps} mt={4} maxW="md" w="full">
       <Tabs variant="unstyled" defaultIndex={1}>
         <CustomTabList>
           <CustomTab>Registrati</CustomTab>

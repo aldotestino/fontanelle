@@ -1,10 +1,15 @@
 import { Box } from '@chakra-ui/react';
 import AuthContainer from '../components/AuthContainer';
+import { useUserStore } from '../stores/userStore';
+import ProfileContainer from '../components/ProfileContainer';
 
 function Profile() {
+
+  const { isAuth } = useUserStore();
+
   return (
-    <Box p={4} display="flex" justifyContent="center">
-      <AuthContainer mt={4} />
+    <Box pt={4} minH="100vh" pb={28} display="flex" justifyContent="center">
+      {isAuth ? <ProfileContainer /> : <AuthContainer />}
     </Box>
   );
 }
