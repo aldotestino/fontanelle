@@ -23,10 +23,13 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	r.POST("/api/v1/user/signup", controllers.Signup)
-	r.POST("/api/v1/user/signin", controllers.Signin)
-	r.GET("/api/v1/user/me", middlewares.RequireAuth, controllers.Me)
-	r.GET("/api/v1/user/signout", middlewares.RequireAuth, controllers.Signout)
+	user := r.Group("/api/v1/user")
+	{
+		user.POST("/signup", controllers.Signup)
+		user.POST("/signin", controllers.Signin)
+		user.GET("/me", middlewares.RequireAuth, controllers.Me)
+		user.GET("/signout", middlewares.RequireAuth, controllers.Signout)
+	}
 
 	r.Run()
 }

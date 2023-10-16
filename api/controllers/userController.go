@@ -3,6 +3,7 @@ package controllers
 import (
 	"fontanelle-api/models"
 	"fontanelle-api/utils"
+	"fontanelle-api/utils/validators"
 	"net/http"
 	"os"
 	"time"
@@ -13,15 +14,15 @@ import (
 )
 
 func Signup(c *gin.Context) {
-	var body struct {
-		Name     string
-		Surname  string
-		Email    string
-		Password string
-	}
+	var body validators.SignupBody
 
 	if c.Bind(&body) != nil {
 		utils.ApiError(c, http.StatusBadRequest, "Invalid body")
+		return
+	}
+
+	if ok, message := body.Validate(); !ok {
+		utils.ApiError(c, http.StatusBadRequest, message)
 		return
 	}
 
@@ -46,13 +47,21 @@ func Signup(c *gin.Context) {
 }
 
 func Signin(c *gin.Context) {
-	var body struct {
-		Email    string
-		Password string
+	presentTokenString, _ := c.Cookie("token")
+	if presentTokenString != "" {
+		utils.ApiError(c, http.StatusNotAcceptable, "Already signed in")
+		return
 	}
+
+	var body validators.SigninBody
 
 	if c.Bind(&body) != nil {
 		utils.ApiError(c, http.StatusBadRequest, "Invalid body")
+		return
+	}
+
+	if ok, message := body.Validate(); !ok {
+		utils.ApiError(c, http.StatusBadRequest, message)
 		return
 	}
 
@@ -106,6 +115,6 @@ func Me(c *gin.Context) {
 func Signout(c *gin.Context) {
 	c.SetCookie("token", "", -1, "", "", os.Getenv("PRODUCTION") == "true", true)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "User signedout successfully",
+		"message": "User signed out successfully",
 	})
 }
