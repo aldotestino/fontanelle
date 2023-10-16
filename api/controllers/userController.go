@@ -14,15 +14,9 @@ import (
 )
 
 func Signup(c *gin.Context) {
-	var body validators.SignupBody
+	var body validators.SignupRequestBody
 
-	if c.Bind(&body) != nil {
-		utils.ApiError(c, http.StatusBadRequest, "Invalid body")
-		return
-	}
-
-	if ok, message := body.Validate(); !ok {
-		utils.ApiError(c, http.StatusBadRequest, message)
+	if !utils.BindAndValidateBody(c, &body) {
 		return
 	}
 
@@ -53,15 +47,9 @@ func Signin(c *gin.Context) {
 		return
 	}
 
-	var body validators.SigninBody
+	var body validators.SigninRequestBody
 
-	if c.Bind(&body) != nil {
-		utils.ApiError(c, http.StatusBadRequest, "Invalid body")
-		return
-	}
-
-	if ok, message := body.Validate(); !ok {
-		utils.ApiError(c, http.StatusBadRequest, message)
+	if !utils.BindAndValidateBody(c, &body) {
 		return
 	}
 

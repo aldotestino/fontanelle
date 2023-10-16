@@ -1,13 +1,13 @@
 package validators
 
-type SignupBody struct {
+type SignupRequestBody struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 	Name     string `json:"name" binding:"required"`
 	Surname  string `json:"surname" binding:"required"`
 }
 
-func (b *SignupBody) Validate() (bool, string) {
+func (b *SignupRequestBody) Validate() (bool, string) {
 	if !validateEmail(b.Email) {
 		return false, "Invalid email"
 	}

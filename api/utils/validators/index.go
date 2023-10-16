@@ -1,6 +1,13 @@
 package validators
 
-import "regexp"
+import (
+	"regexp"
+)
+
+// Body interface
+type ApiRequestBody interface {
+	Validate() (bool, string)
+}
 
 // ValidateEmail checks if an email is valid
 func validateEmail(email string) bool {
