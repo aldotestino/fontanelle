@@ -4,7 +4,7 @@ import { mapStyles } from '../../utils/constants';
 
 interface MapStyleSelectorProps {
   mapStyle: string
-  setMapStyle: React.Dispatch<React.SetStateAction<string>>
+  setMapStyle: (mapStyle: string) => void
 }
 
 function MapStyleSelector({ mapStyle, setMapStyle }: MapStyleSelectorProps) {

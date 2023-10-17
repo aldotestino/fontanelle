@@ -8,17 +8,24 @@ import AddFountainDrawer from '../components/AddNewFountainDrawer';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useUserStore } from '../stores/userStore';
 import MapStyleSelector from '../components/ui/MapStyleSelector';
+import { mapStyles } from '../utils/constants';
 
 function Home() {
 
   const { isAuth } = useUserStore();
 
   const mapRef = useRef<MapRef>() as RefObject<MapRef>;
+  
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [newFountainLocation, setNewFountainLocation] = useState<Location | null>(null);
 
-  const [mapStyle, setMapStyle] = useState<string>('mapbox://styles/mapbox/dark-v11');
+  const [mapStyle, setMapStyle] = useState<string>(window.localStorage.getItem('mapStyle') || mapStyles[0].value);
   const [prevZoom, setPrevZoom] = useState<number>(14);
+
+  function handleSetMapStyle(newMapStyle: string) {
+    window.localStorage.setItem('mapStyle', newMapStyle);
+    setMapStyle(newMapStyle);
+  }
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -69,7 +76,7 @@ function Home() {
         </Marker>}
       </Map>
 
-      <MapStyleSelector mapStyle={mapStyle} setMapStyle={setMapStyle} />
+      <MapStyleSelector mapStyle={mapStyle} setMapStyle={handleSetMapStyle} />
 
       <AddFountainDrawer isOpen={isOpen} onClose={handleOnClose} newFountainLocation={newFountainLocation!} />
     </>
