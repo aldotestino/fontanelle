@@ -1,0 +1,35 @@
+import { Avatar, HStack, Icon, IconButton, Text, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup } from '@chakra-ui/react';
+import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
+import { mapStyles } from '../../utils/constants';
+
+interface MapStyleSelectorProps {
+  mapStyle: string
+  setMapStyle: React.Dispatch<React.SetStateAction<string>>
+}
+
+function MapStyleSelector({ mapStyle, setMapStyle }: MapStyleSelectorProps) {
+  return (
+    <Menu closeOnSelect={false}>
+      <MenuButton position="fixed" top={4} right={4} as={IconButton} icon={<Icon color="slate.900" as={AdjustmentsHorizontalIcon} w={6} h={6} />} aria-label="map style" />
+      <MenuList>
+        <MenuOptionGroup
+          title='Map Style'
+          value={mapStyle}
+          onChange={value => setMapStyle(value as string)}
+          type='radio'
+        >
+          {mapStyles.map((style, index) => (
+            <MenuItemOption key={index} value={style.value}>
+              <HStack>
+                <Avatar size="xs" src={style.image} />
+                <Text>{style.label}</Text>
+              </HStack>
+            </MenuItemOption>
+          ))}
+        </MenuOptionGroup>
+      </MenuList>
+    </Menu>
+  );
+}
+
+export default MapStyleSelector;

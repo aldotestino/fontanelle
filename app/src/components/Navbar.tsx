@@ -8,7 +8,7 @@ function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <Box px={4} w="full" maxW="container.sm" left="50%" style={{ transform: 'translateX(-50%)' }} position="fixed" bottom={4}>
+    <Box px={4} w="full" maxW="container.sm" left="50%" style={{ transform: 'translateX(-50%)' }} position="fixed" bottom={4} zIndex={10}>
       <HStack w="full" py={2} justifyContent="space-around" bg="slate.50" border="1px" borderColor="slate.100" rounded="2xl" shadow="sm">
         
         <VStack spacing={0} cursor="pointer" className='nav-button' onClick={() => navigate('/')} color={location.pathname === '/' ? 'slate.900' : 'slate.500'}>

@@ -31,4 +31,4 @@ export const theme = extendTheme({
   }
 });
 
-export const PRIMARY_COLOR = 'purple';
+export const PRIMARY_COLOR = 'indigo';

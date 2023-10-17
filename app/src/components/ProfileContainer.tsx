@@ -2,7 +2,7 @@ import { BoxProps, VStack, Icon, Text, Box } from '@chakra-ui/react';
 import ProfileHeader from './ProfileHeader';
 import { InboxIcon } from '@heroicons/react/24/outline';
 
-const fountains = Array(30).fill(1);
+const fountains = Array(0).fill(1);
 
 function ProfileContainer({ ...boxProps }: BoxProps) {
 

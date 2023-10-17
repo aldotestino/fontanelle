@@ -56,7 +56,7 @@ function Signin() {
             register={register('password')}
             type='password'
           />
-          <Button mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Continua</Button>
+          <Button isLoading={signin.isLoading} mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Continua</Button>
         </VStack>
       </form>
     </AuthCard>
