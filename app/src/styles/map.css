@@ -5,3 +5,15 @@
 .mapboxgl-ctrl-bottom-right {
   display: none !important;
 }
+
+.mapboxgl-user-location-accuracy-circle {
+  background-color: #6366f133 !important;
+}
+
+.mapboxgl-user-location-dot {
+  background-color: #6366f1 !important;
+}
+
+.mapboxgl-user-location-dot:before {
+  background-color: #6366f1 !important;
+}
