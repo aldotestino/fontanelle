@@ -1,4 +1,4 @@
-import { Button, Drawer, Text, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerProps, FormControl, FormErrorMessage, FormLabel, Icon, Select, VStack, HStack, Spinner } from '@chakra-ui/react';
+import { Button, Drawer, Text, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerProps, FormControl, FormErrorMessage, FormLabel, Icon, Select, VStack, HStack, Spinner, useBreakpointValue, BorderProps } from '@chakra-ui/react';
 import { Location } from '../utils/types';
 import InputField from './ui/InputField';
 import { PRIMARY_COLOR } from '../utils/theme';
@@ -17,6 +17,9 @@ interface AddFountainDrawerProps {
 }
 
 function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountainDrawerProps) {
+
+  const positionVariant = useBreakpointValue<DrawerProps['placement']>({ sm: 'bottom', md: 'right' }, { ssr: false });
+  const roundedVariant = useBreakpointValue<BorderProps['roundedTop']>({ sm: '2xl', md: 'none' }, { ssr: false });
 
   const { isLoading, refetch, data } = useQuery([JSON.stringify(newFountainLocation)], () => GeocoderApi.fromCoordinates(newFountainLocation), {
     enabled: false,
@@ -38,14 +41,14 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
   return (
     <Drawer
       isOpen={isOpen}
-      placement="bottom"
+      placement={positionVariant}
       onClose={onClose}
     >
-      <DrawerContent roundedTop="2xl" h="lg">
+      <DrawerContent roundedTop={roundedVariant}>
         <DrawerCloseButton />
         <DrawerHeader>Aggiungi fontana</DrawerHeader>
 
-        <DrawerBody>
+        <DrawerBody pb={40}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack alignItems="start" spacing={2}>
               <InputField
