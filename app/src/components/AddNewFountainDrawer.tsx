@@ -5,7 +5,7 @@ import { PRIMARY_COLOR } from '../utils/theme';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AddFountainSchema, addFountainSchema } from '../utils/validators';
-import { MapPinIcon } from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import GeocoderApi from '../api/geocoderApi';
 import { useQuery } from 'react-query';
 import { useEffect } from 'react';
@@ -68,13 +68,19 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
               </FormControl>
 
               {isLoading ?
-                <Spinner color={'slate.500'} size="sm" /> : data?.features.length > 0 &&
-                <HStack color="slate.500" spacing={1}>
-                  <Icon as={MapPinIcon} w={4} h={4}/>
-                  <Text>{data?.features[0]?.place_name}</Text>
-                </HStack>}
+                <Spinner color={'slate.500'} size="sm" /> :
+                data?.features[0]?.place_name ? 
+                  <HStack color="slate.500" spacing={1}>
+                    <Icon as={MapPinIcon} w={4} h={4}/>
+                    <Text>{data.features[0].place_name}</Text>
+                  </HStack> : 
+                  <HStack color="red.500" spacing={1}>
+                    <Icon as={ExclamationTriangleIcon} w={4} h={4}/>
+                    <Text>Invalid location</Text>
+                  </HStack>
+              }
               
-              <Button mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Aggiungi</Button>
+              <Button isDisabled={isLoading || !data?.features[0]?.place_name} mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Aggiungi</Button>
             </VStack>
           </form>
         </DrawerBody>

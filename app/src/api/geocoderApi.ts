@@ -1,5 +1,4 @@
 import { client } from '.';
-// import { MAPBOX_ACCESS_TOKEN } from '../utils/constants';
 import { Location } from '../utils/types';
 
 class GeocoderApi {

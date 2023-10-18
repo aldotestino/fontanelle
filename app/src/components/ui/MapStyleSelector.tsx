@@ -10,7 +10,7 @@ interface MapStyleSelectorProps {
 function MapStyleSelector({ mapStyle, setMapStyle }: MapStyleSelectorProps) {
   return (
     <Menu closeOnSelect={false}>
-      <MenuButton position="fixed" top={4} right={4} as={IconButton} icon={<Icon color="slate.900" as={AdjustmentsHorizontalIcon} w={6} h={6} />} aria-label="map style" />
+      <MenuButton as={IconButton} icon={<Icon color="slate.900" as={AdjustmentsHorizontalIcon} w={6} h={6} />} aria-label="map style" />
       <MenuList>
         <MenuOptionGroup
           title='Map Style'
