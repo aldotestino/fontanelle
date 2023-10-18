@@ -5,7 +5,7 @@ import { PRIMARY_COLOR } from '../utils/theme';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AddPartialFountainSchema, addPartialFountainSchema } from '../utils/validators';
-import { ExclamationTriangleIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import GeocoderApi from '../api/geocoderApi';
 import { useMutation, useQuery } from 'react-query';
 import { useEffect } from 'react';
@@ -104,10 +104,7 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
               {isLoading ?
                 <Spinner color={'slate.500'} size="sm" /> :
                 data?.features[0]?.place_name ? 
-                  <HStack color="slate.500" spacing={1}>
-                    <Icon as={MapPinIcon} w={4} h={4}/>
-                    <Text>{data.features[0].place_name}</Text>
-                  </HStack> : 
+                  <Text color="slate.500">{data.features[0].place_name}</Text> : 
                   <HStack color="red.500" spacing={1}>
                     <Icon as={ExclamationTriangleIcon} w={4} h={4}/>
                     <Text>Invalid location</Text>

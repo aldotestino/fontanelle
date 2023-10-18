@@ -9,6 +9,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetFountains(c *gin.Context) {
+
+	type FountainSelect struct {
+		ID     uint    `json:"id"`
+		Lat    float64 `json:"lat"`
+		Lng    float64 `json:"lng"`
+		Street string  `json:"street"`
+		Name   string  `json:"name"`
+		IsFree bool    `json:"isFree"`
+	}
+
+	var fountains []FountainSelect
+	utils.DB.Model(&models.Fountain{}).Find(&fountains)
+
+	c.JSON(http.StatusOK, fountains)
+}
+
 func AddFountain(c *gin.Context) {
 	var body validators.AddFountainRequestBody
 
@@ -29,7 +46,7 @@ func AddFountain(c *gin.Context) {
 	result := utils.DB.Create(&fountain)
 
 	if result.Error != nil {
-		utils.ApiError(c, http.StatusConflict, result.Error.Error())
+		utils.ApiError(c, http.StatusConflict, "Fountain in this location already exists")
 		return
 	}
 

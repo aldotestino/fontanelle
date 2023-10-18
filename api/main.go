@@ -34,6 +34,7 @@ func main() {
 	fountain := r.Group("/api/v1/fountain")
 	{
 		fountain.POST("", middlewares.RequireAuth, controllers.AddFountain)
+		fountain.GET("", controllers.GetFountains)
 	}
 
 	r.Run()

@@ -8,10 +8,12 @@
 
 .mapboxgl-user-location-accuracy-circle {
   background-color: #6366f133 !important;
+  pointer-events: none !important;
 }
 
 .mapboxgl-user-location-dot {
   background-color: #6366f1 !important;
+  pointer-events: none !important;
 }
 
 .mapboxgl-user-location-dot:before {

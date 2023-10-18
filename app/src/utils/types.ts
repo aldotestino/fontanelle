@@ -1,18 +1,29 @@
 import { AddPartialFountainSchema } from './validators';
 
-export interface User {
+export type User = {
   name: string
   surname: string
   email: string
 }
 
-export interface Location {
+export type Location = {
   lat: number
   lng: number
 }
 
-export interface AddFountainSchema extends AddPartialFountainSchema {
+export type AddFountainSchema = AddPartialFountainSchema & {
   lat: number
   lng: number
   street: string
 }
+
+export type AddFountainResponse = {
+  id: number
+  name: string
+  isFree: number
+  lat: number
+  lng: number
+  street: string
+}
+
+export type GetFountainResponse = AddFountainResponse
