@@ -1,3 +1,5 @@
+import { AddPartialFountainSchema } from './validators';
+
 export interface User {
   name: string
   surname: string
@@ -7,4 +9,10 @@ export interface User {
 export interface Location {
   lat: number
   lng: number
+}
+
+export interface AddFountainSchema extends AddPartialFountainSchema {
+  lat: number
+  lng: number
+  street: string
 }

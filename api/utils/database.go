@@ -20,5 +20,8 @@ func ConnectDatabase() {
 }
 
 func MigrateDatabase() {
-	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.User{}, &models.Fountain{})
+
+	// Add unique constraint to lat and lng
+	DB.Exec("ALTER TABLE fountains ADD CONSTRAINT unique_lat_lng UNIQUE (lat, lng)")
 }

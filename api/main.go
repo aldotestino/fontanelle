@@ -31,5 +31,10 @@ func main() {
 		user.GET("/signout", middlewares.RequireAuth, controllers.Signout)
 	}
 
+	fountain := r.Group("/api/v1/fountain")
+	{
+		fountain.POST("", middlewares.RequireAuth, controllers.AddFountain)
+	}
+
 	r.Run()
 }

@@ -1,9 +1,17 @@
 export const mapStyles = [{
   value: 'mapbox://styles/mapbox/dark-v11',
-  label: 'Dark',
-  image: 'https://imgur.com/aT3pFvY.png'
+  label: 'Scura',
+  image: '/dark.png'
+}, {
+  value: 'mapbox://styles/mapbox/light-v11',
+  label: 'Chiara',
+  image: '/light.png'
 }, {
   value: 'mapbox://styles/mapbox/navigation-night-v1',
-  label: 'Navigation',
-  image: 'https://imgur.com/9XCRHeW.png'
+  label: 'Navigazione',
+  image: '/navigation_night.png'
+}, {
+  value: 'mapbox://styles/mapbox/satellite-streets-v12',
+  label: 'Satellite',
+  image: '/satellite.png'
 }] as const;

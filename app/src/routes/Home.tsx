@@ -4,7 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '../styles/map.css';
 import { Location } from '../utils/types';
 import { HStack, Icon, IconButton, useBreakpointValue, useDisclosure } from '@chakra-ui/react';
-import AddFountainDrawer from '../components/AddNewFountainDrawer';
+import AddFountainDrawer from '../components/AddFountainDrawer';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useUserStore } from '../stores/userStore';
 import MapStyleSelector from '../components/ui/MapStyleSelector';
@@ -71,10 +71,6 @@ function Home() {
         mapStyle={mapStyle}
         style={{ width: '100vw', height: '100vh' }}
         onClick={handleOnOpen}
-        // onLoad={() => {
-        //   setIsGeolocating(true);
-        //   geoControlRef.current?.trigger();
-        // }}
       >
         <GeolocateControl onGeolocate={() => setIsGeolocating(false)} ref={geoControlRef} style={{ display: 'none' }} />
 

@@ -1,14 +1,16 @@
-import { Button, Drawer, Text, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerProps, FormControl, FormErrorMessage, FormLabel, Icon, Select, VStack, HStack, Spinner, useBreakpointValue, BorderProps } from '@chakra-ui/react';
+import { Button, Drawer, Text, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerProps, FormControl, FormErrorMessage, FormLabel, Icon, Select, VStack, HStack, Spinner, useBreakpointValue, BorderProps, useToast } from '@chakra-ui/react';
 import { Location } from '../utils/types';
 import InputField from './ui/InputField';
 import { PRIMARY_COLOR } from '../utils/theme';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AddFountainSchema, addFountainSchema } from '../utils/validators';
+import { AddPartialFountainSchema, addPartialFountainSchema } from '../utils/validators';
 import { ExclamationTriangleIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import GeocoderApi from '../api/geocoderApi';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useEffect } from 'react';
+import FountainApi from '../api/fountainApi';
+import { AxiosError } from 'axios';
 
 interface AddFountainDrawerProps {
   isOpen: DrawerProps['isOpen'];
@@ -17,6 +19,8 @@ interface AddFountainDrawerProps {
 }
 
 function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountainDrawerProps) {
+
+  const toast = useToast();
 
   const positionVariant = useBreakpointValue<DrawerProps['placement']>({ sm: 'bottom', md: 'right' }, { ssr: false });
   const roundedVariant = useBreakpointValue<BorderProps['roundedTop']>({ sm: '2xl', md: 'none' }, { ssr: false });
@@ -30,26 +34,56 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
     refetch().catch(console.error);
   }, [newFountainLocation]);
 
-  const { register, handleSubmit, formState: { errors, touchedFields } } = useForm<AddFountainSchema>({
-    resolver: zodResolver(addFountainSchema),
+  const { register, handleSubmit, formState: { errors, touchedFields }, reset } = useForm<AddPartialFountainSchema>({
+    resolver: zodResolver(addPartialFountainSchema),
   });
 
-  async function onSubmit(values: AddFountainSchema) {
-    console.log(values, newFountainLocation, data.features[0].place_name);
-  }
+  const addFountain = useMutation({
+    mutationFn: FountainApi.addFountain,
+    onMutate: () => {
+      reset();
+      onClose();
+    },
+    onSuccess: () => {
+      toast({
+        position: 'top-right',
+        title: 'Fontana aggiunta!',
+        description: 'Puoi visualizzare la fontanta nel tuo profilo.',
+        status: 'success',
+        isClosable: true,
+      });
+    },
+    onError: (error: AxiosError<{message: string}>) => {
+      toast({
+        position: 'top-right',
+        title: 'Errore',
+        description: error.response?.data.message,
+        status: 'error',
+        isClosable: true,
+      });
+    }
+  });
   
   return (
     <Drawer
       isOpen={isOpen}
       placement={positionVariant}
-      onClose={onClose}
+      onClose={() => {
+        reset();
+        onClose();
+      }}
     >
       <DrawerContent roundedTop={roundedVariant}>
         <DrawerCloseButton />
         <DrawerHeader>Aggiungi fontana</DrawerHeader>
 
         <DrawerBody pb={40}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(values => addFountain.mutateAsync({
+            ...values,
+            lat: newFountainLocation.lat,
+            lng: newFountainLocation.lng,
+            street: data.features[0].place_name
+          }))}>
             <VStack alignItems="start" spacing={2}>
               <InputField
                 label='Nome'
@@ -80,7 +114,7 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
                   </HStack>
               }
               
-              <Button isDisabled={isLoading || !data?.features[0]?.place_name} mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Aggiungi</Button>
+              <Button isDisabled={isLoading || !data?.features[0]?.place_name} isLoading={addFountain.isLoading} mt={2} type='submit' colorScheme={PRIMARY_COLOR}>Aggiungi</Button>
             </VStack>
           </form>
         </DrawerBody>

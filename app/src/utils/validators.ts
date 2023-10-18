@@ -15,11 +15,11 @@ export const signupSchema = z.object({
   surname: z.string().min(1),
 });
 
-export const addFountainSchema = z.object({
+export const addPartialFountainSchema = z.object({
   name: z.string().min(1),
   isFree: z.coerce.number().int().min(0).max(1),
 });
 
 export type SigninSchema = z.infer<typeof signinSchema>
 export type SignupSchema = z.infer<typeof signupSchema>
-export type AddFountainSchema = z.infer<typeof addFountainSchema>
+export type AddPartialFountainSchema = z.infer<typeof addPartialFountainSchema>
