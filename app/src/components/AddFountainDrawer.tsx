@@ -110,7 +110,7 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
                   <Text color="slate.500">{data.features[0].place_name}</Text> : 
                   <HStack color="red.500" spacing={1}>
                     <Icon as={ExclamationTriangleIcon} w={4} h={4}/>
-                    <Text>Invalid location</Text>
+                    <Text>Posizione non valida</Text>
                   </HStack>
               }
               

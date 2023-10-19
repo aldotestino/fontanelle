@@ -3,7 +3,7 @@ import Map, { MapRef, GeolocateControl, Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../styles/map.css';
 import { Location } from '../utils/types';
-import { HStack, Icon, IconButton, useDisclosure } from '@chakra-ui/react';
+import { Center, HStack, Icon, IconButton, Spinner, useDisclosure } from '@chakra-ui/react';
 import AddFountainDrawer from '../components/AddFountainDrawer';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useUserStore } from '../stores/userStore';
@@ -15,12 +15,13 @@ import FountainApi from '../api/fountainApi';
 import { useQuery } from 'react-query';
 import mapboxgl from 'mapbox-gl';
 import FountainCard from '../components/ui/FountainCard';
+import { useLocation } from 'react-router-dom';
 
 function Home() {
 
   const { isAuth } = useUserStore();
 
-  const mapRef = useRef<MapRef>() as RefObject<MapRef>;
+  const mapRef = useRef<MapRef>(null) as RefObject<MapRef>;
   const geoControlRef = useRef<mapboxgl.GeolocateControl>() as RefObject<mapboxgl.GeolocateControl>;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,11 +31,31 @@ function Home() {
   const [mapStyle, setMapStyle] = useState<string>(window.localStorage.getItem('mapStyle') || mapStyles[0].value);
   const [prevZoom, setPrevZoom] = useState<number>(14);
 
-  const { data } = useQuery(['fountains'], FountainApi.getFountains, {
-    refetchOnWindowFocus: false
+  const [selectedFountain, setSelectedFountain] = useState<number>(-1);
+
+  const location = useLocation();
+
+  const { data, isLoading } = useQuery(['fountains'], FountainApi.getFountains, {
+    refetchOnWindowFocus: false,
   });
 
-  const [selectedFountain, setSelectedFountain] = useState<number>(-1);
+  function onLoad() {
+    const fountainId = location.search.split('?fountainId=')[1];
+    const index = data?.findIndex(fountain => fountain.id === parseInt(fountainId));
+    if(index !== undefined && index !== -1) {
+      setSelectedFountain(index);
+      mapRef.current?.flyTo({
+        duration: 0,
+        center: [data![index].lng, data![index].lat],
+        offset: [0, -100],
+        zoom: 20,
+      });
+    }else {
+      //center map on italy coordinates
+      mapRef.current?.setCenter([12.5674, 41.8719]);
+      mapRef.current?.setZoom(4);
+    }
+  }
 
   function handleSetMapStyle(newMapStyle: string) {
     window.localStorage.setItem('mapStyle', newMapStyle);
@@ -93,6 +114,14 @@ function Home() {
     });
   }
 
+  if(isLoading) {
+    return (
+      <Center h="100vh">
+        <Spinner color={`${PRIMARY_COLOR}.600`} size="lg" />
+      </Center>
+    );
+  }
+  
   return (
     <>
       <Map
@@ -102,6 +131,7 @@ function Home() {
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
         mapStyle={mapStyle}
         style={{ width: '100vw', height: '100vh' }}
+        onLoad={onLoad}
         onClick={handleOnMapClick}
       >
         {data && data.map((fountain, i) => (

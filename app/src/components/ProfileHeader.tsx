@@ -31,7 +31,7 @@ function ProfileHeader() {
           <Heading size="xl">Ciao, {user?.name}</Heading>
         </HStack>
           
-        <Menu>
+        <Menu placement="bottom-end">
           <MenuButton
             as={IconButton}
             aria-label='Impostazioni'
