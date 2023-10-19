@@ -15,12 +15,7 @@ function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainRespons
   const { isOpen: isOpenVote, onOpen: onOpenVote, onClose: onCloseVote } = useDisclosure();
 
   function openMap(){
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if(navigator.userAgentData.platform === 'iPhone')
-      window.open(`maps://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${lat},${lng}`);
-    else
-      window.open(`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${lat},${lng}`);
+    window.open(`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${lat},${lng}`);
   }
 
   return (
