@@ -15,3 +15,5 @@ export const mapStyles = [{
   label: 'Satellite',
   image: '/satellite.png'
 }] as const;
+
+export const FLY_TO_DURATION = 2000;

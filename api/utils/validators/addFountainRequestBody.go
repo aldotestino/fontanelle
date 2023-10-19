@@ -2,7 +2,7 @@ package validators
 
 type AddFountainRequestBody struct {
 	Name   string  `json:"name" binding:"required"`
-	IsFree uint8   `json:"isFree" binding:"required"`
+	IsFree uint8   `json:"isFree"`
 	Lat    float64 `json:"lat" binding:"required"`
 	Lng    float64 `json:"lng" binding:"required"`
 	Street string  `json:"street" binding:"required"`

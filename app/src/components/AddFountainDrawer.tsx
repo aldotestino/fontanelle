@@ -1,5 +1,5 @@
-import { Button, Drawer, Text, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerProps, FormControl, FormErrorMessage, FormLabel, Icon, Select, VStack, HStack, Spinner, useBreakpointValue, BorderProps, useToast } from '@chakra-ui/react';
-import { Location } from '../utils/types';
+import { Button, Drawer, Text, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerProps, FormControl, FormErrorMessage, FormLabel, Icon, Select, VStack, HStack, Spinner, useToast } from '@chakra-ui/react';
+import { GetFountainResponse, Location } from '../utils/types';
 import InputField from './ui/InputField';
 import { PRIMARY_COLOR } from '../utils/theme';
 import { useForm } from 'react-hook-form';
@@ -11,6 +11,7 @@ import { useMutation, useQuery } from 'react-query';
 import { useEffect } from 'react';
 import FountainApi from '../api/fountainApi';
 import { AxiosError } from 'axios';
+import { queryClient } from '../api';
 
 interface AddFountainDrawerProps {
   isOpen: DrawerProps['isOpen'];
@@ -21,9 +22,6 @@ interface AddFountainDrawerProps {
 function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountainDrawerProps) {
 
   const toast = useToast();
-
-  const positionVariant = useBreakpointValue<DrawerProps['placement']>({ sm: 'bottom', md: 'right' }, { ssr: false });
-  const roundedVariant = useBreakpointValue<BorderProps['roundedTop']>({ sm: '2xl', md: 'none' }, { ssr: false });
 
   const { isLoading, refetch, data } = useQuery([JSON.stringify(newFountainLocation)], () => GeocoderApi.fromCoordinates(newFountainLocation), {
     enabled: false,
@@ -44,7 +42,12 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
       reset();
       onClose();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const fountainsCache = queryClient.getQueryData<GetFountainResponse[]>(['fountains']);
+      if(fountainsCache) {
+        const newFountainsCache = [...fountainsCache, data];
+        queryClient.setQueryData(['fountains'], newFountainsCache);
+      }
       toast({
         position: 'top-right',
         title: 'Fontana aggiunta!',
@@ -67,17 +70,17 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
   return (
     <Drawer
       isOpen={isOpen}
-      placement={positionVariant}
+      placement="bottom"
       onClose={() => {
         reset();
         onClose();
       }}
     >
-      <DrawerContent roundedTop={roundedVariant}>
+      <DrawerContent roundedTop="2xl">
         <DrawerCloseButton />
         <DrawerHeader>Aggiungi fontana</DrawerHeader>
 
-        <DrawerBody pb={40}>
+        <DrawerBody pb={20}>
           <form onSubmit={handleSubmit(values => addFountain.mutateAsync({
             ...values,
             lat: newFountainLocation.lat,

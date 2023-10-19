@@ -1,14 +1,14 @@
 import { RefObject, useRef, useState } from 'react';
-import Map, { MapRef, GeolocateControl, Marker, PointLike } from 'react-map-gl';
+import Map, { MapRef, GeolocateControl, Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../styles/map.css';
 import { Location } from '../utils/types';
-import { HStack, Icon, IconButton, useBreakpointValue, useDisclosure } from '@chakra-ui/react';
+import { HStack, Icon, IconButton, useDisclosure } from '@chakra-ui/react';
 import AddFountainDrawer from '../components/AddFountainDrawer';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useUserStore } from '../stores/userStore';
 import MapStyleSelector from '../components/ui/MapStyleSelector';
-import { mapStyles } from '../utils/constants';
+import { FLY_TO_DURATION, mapStyles } from '../utils/constants';
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
 import { PRIMARY_COLOR } from '../utils/theme';
 import FountainApi from '../api/fountainApi';
@@ -30,8 +30,6 @@ function Home() {
   const [mapStyle, setMapStyle] = useState<string>(window.localStorage.getItem('mapStyle') || mapStyles[0].value);
   const [prevZoom, setPrevZoom] = useState<number>(14);
 
-  const mapOffset = useBreakpointValue<PointLike>({ sm: [0, -200], md: [-100, 0] }, { ssr: false });
-
   const { data } = useQuery(['fountains'], FountainApi.getFountains, {
     refetchOnWindowFocus: false
   });
@@ -43,15 +41,19 @@ function Home() {
     setMapStyle(newMapStyle);
   }
 
-  function handleOnOpen(event: mapboxgl.MapLayerMouseEvent) {
+  function handleOnMapClick(event: mapboxgl.MapLayerMouseEvent) {
+    if(event.originalEvent.target !== mapRef.current?.getCanvas()) return;
+    if(selectedFountain === -1) handleOnOpen({ lat: event.lngLat.lat, lng: event.lngLat.lng });
+    else handleUnselectFountain();
+  }
+  
+  function handleOnOpen({ lat, lng }: Location) {
     if(!isAuth) return;
-    setSelectedFountain(-1); // TODO: probably not needed if onClick is impelemented on map
-    const { lat, lng } = event.lngLat;
     setPrevZoom(mapRef.current?.getZoom() || 14);
     mapRef.current?.flyTo({
-      duration: 2000,
+      duration: FLY_TO_DURATION,
       center: [lng, lat],
-      offset: mapOffset,
+      offset: [0, -200],
       zoom: 20,
     });
     setNewFountainLocation({ lat, lng });
@@ -61,7 +63,7 @@ function Home() {
   function handleOnClose() {
     setNewFountainLocation(null);
     mapRef.current?.flyTo({
-      duration: 2000,
+      duration: FLY_TO_DURATION,
       zoom: prevZoom
     });
     onClose();
@@ -76,21 +78,20 @@ function Home() {
     setSelectedFountain(index);
     setPrevZoom(mapRef.current?.getZoom() || 14);
     mapRef.current?.flyTo({
-      duration: 2000,
+      duration: FLY_TO_DURATION,
       center: [data![index].lng, data![index].lat],
       offset: [0, -100],
       zoom: 20,
     });
   }
 
-  // function handleUnselectFountain() {
-  //   if(selectedFountain === -1) return;
-  //   setSelectedFountain(-1);
-  //   mapRef.current?.flyTo({
-  //     duration: 2000,
-  //     zoom: prevZoom
-  //   });
-  // }
+  function handleUnselectFountain() {
+    setSelectedFountain(-1);
+    mapRef.current?.flyTo({
+      duration: FLY_TO_DURATION,
+      zoom: prevZoom
+    });
+  }
 
   return (
     <>
@@ -101,7 +102,7 @@ function Home() {
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
         mapStyle={mapStyle}
         style={{ width: '100vw', height: '100vh' }}
-        onDblClick={handleOnOpen} // TODO: go back to onClick
+        onClick={handleOnMapClick}
       >
         {data && data.map((fountain, i) => (
           <Marker onClick={() => handleSelectFountain(i)} key={fountain.id} longitude={fountain.lng} latitude={fountain.lat}>
