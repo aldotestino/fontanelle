@@ -3,8 +3,8 @@ import { Box, Badge, HStack, Heading, Text, VStack, Icon, Button, IconButton, Me
 import { PRIMARY_COLOR } from '../../utils/theme';
 import { EllipsisVerticalIcon, ExclamationTriangleIcon, StarIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconFull } from '@heroicons/react/24/solid';
-import ReportFountainAlert from '../ReportFountainAlert';
-import VoteFountainAlert from '../VoteFountainAlert';
+import ReportFountainModal from '../ReportFountainModal';
+import VoteFountainModal from '../VoteFountainModal';
 import { useUserStore } from '../../stores/userStore';
 
 function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainResponse) {
@@ -51,8 +51,8 @@ function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainRespons
         </VStack>
       </Box>
 
-      <ReportFountainAlert isOpen={isOpenReport} onClose={onCloseReport} name={name} id={id} />
-      <VoteFountainAlert isOpen={isOpenVote} onClose={onCloseVote} name={name} id={id} />
+      <ReportFountainModal isOpen={isOpenReport} onClose={onCloseReport} name={name} id={id} />
+      <VoteFountainModal isOpen={isOpenVote} onClose={onCloseVote} name={name} id={id} />
     </>
   );
 }
