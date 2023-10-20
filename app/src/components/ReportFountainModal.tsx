@@ -16,13 +16,13 @@ function ReportFountainModal({ onClose, isOpen, id, name }: ReportFountainModalP
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Segnala fontana</ModalHeader>
-        <ModalBody>
-            Sei sicuro? Stai segnalando la fontana {name}.
+      <ModalContent mx={[4, 0]}>
+        <ModalHeader fontSize="xl" px={4} pb={2}>Segnala fontana</ModalHeader>
+        <ModalBody py={0} px={4}>
+          Sei sicuro? Stai segnalando la fontana {name}.
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter px={4}>
           <Button mr={3} onClick={onClose}>
             Annulla
           </Button>

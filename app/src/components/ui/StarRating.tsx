@@ -13,7 +13,7 @@ function StarRating({ rating, setRating }: StarRatingProps) {
   const [hover, setHover] = useState<number | null>(null);
 
   return (
-    <HStack spacing={0}>
+    <HStack alignSelf="center" spacing={0}>
       {Array.from({ length: 5 }).map((_, index) => 
         <Icon
           onMouseEnter={() => setHover(index + 1)}

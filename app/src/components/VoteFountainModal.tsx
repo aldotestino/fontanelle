@@ -27,16 +27,16 @@ function VoteFountainModal({ onClose, isOpen, id, name }: ReportFountainModalPro
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Valuta fontana</ModalHeader>
-        <ModalBody>
-          <VStack spacing={4}>
+      <ModalContent mx={[4, 0]}>
+        <ModalHeader fontSize="xl" px={4} pb={2}>Valuta fontana</ModalHeader>
+        <ModalBody py={0} px={4}>
+          <VStack spacing={2}>
             <Text alignSelf="start">Stai valutando la fontana {name}.</Text>
             <StarRating rating={rating} setRating={setRating} />
           </VStack>
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter px={4}>
           <Button mr={3} onClick={onClose}>
             Annulla
           </Button>
