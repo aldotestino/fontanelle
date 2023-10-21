@@ -33,8 +33,9 @@ func main() {
 
 	fountain := r.Group("/api/v1/fountain")
 	{
-		fountain.POST("", middlewares.RequireAuth, controllers.AddFountain)
 		fountain.GET("", controllers.GetFountains)
+		fountain.GET("/mine", middlewares.RequireAuth, controllers.GetUserFountains)
+		fountain.POST("", middlewares.RequireAuth, controllers.AddFountain)
 	}
 
 	r.Run()
