@@ -4,13 +4,17 @@ import (
 	"fontanelle-api/controllers"
 	"fontanelle-api/middlewares"
 	"fontanelle-api/utils"
+	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	cors "github.com/rs/cors/wrapper/gin"
 )
 
 func init() {
-	utils.GetEnvConfig()
+	if os.Getenv("GIN_MODE") != gin.ReleaseMode {
+		utils.GetEnvConfig()
+	}
 	utils.ConnectDatabase()
 	utils.MigrateDatabase()
 }
@@ -19,7 +23,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "http://192.168.1.52:5173"},
+		AllowedOrigins:   []string{os.Getenv("APP_URL")},
 		AllowCredentials: true,
 	}))
 
@@ -38,5 +42,8 @@ func main() {
 		fountain.POST("", middlewares.RequireAuth, controllers.AddFountain)
 	}
 
+	if gin.Mode() == gin.ReleaseMode {
+		log.Default().Println("Listening and serving HTTP on :" + os.Getenv("PORT"))
+	}
 	r.Run()
 }
