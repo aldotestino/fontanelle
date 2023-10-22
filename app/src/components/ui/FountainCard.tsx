@@ -1,7 +1,7 @@
 import { GetFountainResponse } from '../../utils/types';
 import { Box, Badge, HStack, Heading, Text, VStack, Icon, Button, IconButton, MenuItem, MenuList, Menu, MenuButton, useDisclosure } from '@chakra-ui/react';
 import { PRIMARY_COLOR } from '../../utils/theme';
-import { EllipsisVerticalIcon, ExclamationTriangleIcon, StarIcon } from '@heroicons/react/24/outline';
+import { EllipsisVerticalIcon, ExclamationTriangleIcon, ShareIcon, StarIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconFull } from '@heroicons/react/24/solid';
 import ReportFountainModal from '../ReportFountainModal';
 import VoteFountainModal from '../VoteFountainModal';
@@ -16,6 +16,18 @@ function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainRespons
 
   function openMap(){
     window.open(`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${lat},${lng}`);
+  }
+
+  async function onShare() {
+    try {
+      await navigator.share({
+        title: 'Fontanelle',
+        text: `Scopri la fontana ${name}!`,
+        url: window.location.href,
+      });
+    } catch(err) {
+      console.error(err);
+    } 
   }
 
   return (
@@ -42,6 +54,7 @@ function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainRespons
                 icon={<Icon as={EllipsisVerticalIcon} h={6} w={6} />}
               />
               <MenuList>
+                <MenuItem onClick={onShare} icon={<Icon as={ShareIcon} w={5} h={5} />}>Condividi</MenuItem>
                 <MenuItem onClick={onOpenVote} icon={<Icon as={StarIcon} w={5} h={5} />}>Valuta</MenuItem>
                 <MenuItem onClick={onOpenReport} color="red.600" icon={<Icon as={ExclamationTriangleIcon} w={5} h={5} />}>Segnala</MenuItem>
               </MenuList>

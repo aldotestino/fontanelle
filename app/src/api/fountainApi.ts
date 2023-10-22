@@ -16,6 +16,13 @@ class FountainApi {
     return data;
   }
 
+  static async getUserFountains(): Promise<GetFountainResponse[]> {
+    const { data } = await client.get(`${FountainApi.endpoint}/mine`, {
+      withCredentials: true
+    });
+    return data;
+  }
+
 }
 
 export default FountainApi;

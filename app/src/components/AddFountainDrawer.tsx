@@ -48,7 +48,13 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
         const newFountainsCache = [...fountainsCache, data];
         queryClient.setQueryData(['fountains'], newFountainsCache);
       }
+      const myFountainsCache = queryClient.getQueryData<GetFountainResponse[]>(['my-fountains']);
+      if(myFountainsCache) {
+        const newMyFountainsCache = [...myFountainsCache, data];
+        queryClient.setQueryData(['my-fountains'], newMyFountainsCache);
+      }
       toast({
+        variant: 'subtle',
         position: 'top-right',
         title: 'Fontana aggiunta!',
         description: 'Puoi visualizzare la fontanta nel tuo profilo.',
@@ -58,6 +64,7 @@ function AddFountainDrawer({ isOpen, onClose, newFountainLocation }: AddFountain
     },
     onError: (error: AxiosError<{message: string}>) => {
       toast({
+        variant: 'subtle',
         position: 'top-right',
         title: 'Errore',
         description: error.response?.data.message,

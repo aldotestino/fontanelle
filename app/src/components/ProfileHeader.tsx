@@ -14,6 +14,7 @@ function ProfileHeader() {
       deleteUser();
     }else {
       toast({
+        variant: 'subtle',
         position: 'top-right',
         title: 'Errore',
         description: res.data.message,

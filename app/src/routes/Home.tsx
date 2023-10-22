@@ -1,4 +1,4 @@
-import { RefObject, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import Map, { MapRef, GeolocateControl, Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../styles/map.css';
@@ -39,19 +39,35 @@ function Home() {
     refetchOnWindowFocus: false,
   });
 
-  function onLoad() {
+  function handleFountainIdInUrl() {
     const fountainId = location.search.split('?fountainId=')[1];
     const index = data?.findIndex(fountain => fountain.id === parseInt(fountainId));
     if(index !== undefined && index !== -1) {
       setSelectedFountain(index);
+      return true;
+    }
+    return false;
+  }
+
+  useEffect(() => {
+    handleFountainIdInUrl();
+  }, [location.search]);
+
+  useEffect(() => {
+    if(selectedFountain !== -1) {
       mapRef.current?.flyTo({
-        duration: 0,
-        center: [data![index].lng, data![index].lat],
+        duration: FLY_TO_DURATION,
+        center: [data![selectedFountain].lng, data![selectedFountain].lat],
         offset: [0, -100],
         zoom: 20,
       });
-    }else {
-      //center map on italy coordinates
+    }
+  }, [selectedFountain]);
+
+  function onLoad() {
+    const fountainIdInUrl = handleFountainIdInUrl();
+    if(!fountainIdInUrl) {
+    //center map on italy coordinates
       mapRef.current?.setCenter([12.5674, 41.8719]);
       mapRef.current?.setZoom(4);
     }

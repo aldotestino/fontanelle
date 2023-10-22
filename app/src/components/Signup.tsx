@@ -13,14 +13,16 @@ function Signup() {
 
   const toast = useToast();
 
-  const { register, handleSubmit, formState: { errors, touchedFields }, } = useForm<SignupSchema>({
+  const { register, handleSubmit, formState: { errors, touchedFields }, reset } = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
   });
 
   const signup = useMutation({
     mutationFn: UserApi.signup,
     onSuccess: () => {
+      reset();
       toast({
+        variant: 'subtle',
         position: 'top-right',
         title: 'Registrazione completata!',
         description: 'Ora puoi effettuare il login.',
@@ -29,7 +31,9 @@ function Signup() {
       });
     },
     onError: (error: AxiosError<{message: string}>) => {
+      reset();
       toast({
+        variant: 'subtle',
         position: 'top-right',
         title: 'Errore',
         description: error.response?.data.message,

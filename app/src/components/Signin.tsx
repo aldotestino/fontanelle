@@ -16,17 +16,20 @@ function Signin() {
   const toast = useToast();
   const { setUser } = useUserStore();
 
-  const { register, handleSubmit, formState: { errors, touchedFields }, } = useForm<SigninSchema>({
+  const { register, handleSubmit, formState: { errors, touchedFields }, reset } = useForm<SigninSchema>({
     resolver: zodResolver(signinSchema),
   });
 
   const signin = useMutation({
     mutationFn: UserApi.signin,
     onSuccess: (values: User) => {
+      reset();
       setUser(values);
     },
     onError: (error: AxiosError<{message: string}>) => {
+      reset();
       toast({
+        variant: 'subtle',
         position: 'top-right',
         title: 'Errore',
         description: error.response?.data.message,
