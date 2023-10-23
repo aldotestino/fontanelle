@@ -9,15 +9,29 @@ services:
     ports:
       - 3000:3000
     container_name: api
+    restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   nginx:
-    build: ./nginx
+    image: nginx
     ports:
-      - "80:80"
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
     depends_on:
       - api
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
 
   db:
     image: postgres
@@ -27,3 +41,9 @@ services:
     ports:
       - 5432:5432
     container_name: db
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
