@@ -46,7 +46,7 @@ function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainRespons
               ))}
               <Text ml={1} color="slate.500">4.3</Text>
             </HStack>
-            {isAuth && <Menu placement="top-end" closeOnSelect={false}>
+            <Menu placement="top-end" closeOnSelect={false}>
               <MenuButton
                 as={IconButton}
                 aria-label='Impostazioni'
@@ -54,11 +54,13 @@ function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainRespons
                 icon={<Icon as={EllipsisVerticalIcon} h={6} w={6} />}
               />
               <MenuList>
-                <MenuItem onClick={onShare} icon={<Icon as={ShareIcon} w={5} h={5} />}>Condividi</MenuItem>
-                <MenuItem onClick={onOpenVote} icon={<Icon as={StarIcon} w={5} h={5} />}>Valuta</MenuItem>
+                {isAuth && <>
+                  <MenuItem onClick={onShare} icon={<Icon as={ShareIcon} w={5} h={5} />}>Condividi</MenuItem>
+                  <MenuItem onClick={onOpenVote} icon={<Icon as={StarIcon} w={5} h={5} />}>Valuta</MenuItem>
+                </>}
                 <MenuItem onClick={onOpenReport} color="red.600" icon={<Icon as={ExclamationTriangleIcon} w={5} h={5} />}>Segnala</MenuItem>
               </MenuList>
-            </Menu>}
+            </Menu>
           </HStack>
           <Button onClick={openMap} w="full" size="lg" colorScheme={PRIMARY_COLOR}>Raggiungi</Button>
         </VStack>
