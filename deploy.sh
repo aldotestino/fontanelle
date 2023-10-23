@@ -1,4 +1,2 @@
-docker compose build &&
-chmod +x init-letsencrypt.sh &&
-./init-letsencrypt.sh &&
-docker compose up
+dokcer compose build &&
+docker compose up -d

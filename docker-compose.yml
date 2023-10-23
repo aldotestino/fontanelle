@@ -20,6 +20,8 @@ services:
       - 80:80
       - 443:443
     container_name: nginx
+    depends_on:
+      - api
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./certbot/conf:/etc/letsencrypt
@@ -43,8 +45,13 @@ services:
       - 5432:5432
     container_name: db
     restart: always
+    volumes:
+      - ./database-data:/var/lib/postgresql/data/
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
+
+volumes:
+  database-data:
