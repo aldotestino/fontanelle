@@ -40,6 +40,7 @@ func main() {
 		fountain.GET("", controllers.GetFountains)
 		fountain.GET("/mine", middlewares.RequireAuth, controllers.GetUserFountains)
 		fountain.POST("", middlewares.RequireAuth, controllers.AddFountain)
+		fountain.POST("/vote", middlewares.RequireAuth, controllers.VoteFountain)
 	}
 
 	if gin.Mode() == gin.ReleaseMode {

@@ -17,13 +17,23 @@ export type AddFountainSchema = AddPartialFountainSchema & {
   street: string
 }
 
-export type AddFountainResponse = {
+export type GetUserFountainResponse = {
   id: number
   name: string
-  isFree: number
-  lat: number
-  lng: number
   street: string
 }
 
-export type GetFountainResponse = AddFountainResponse
+export type AddFountainResponse = GetUserFountainResponse & {
+  isFree: number
+  lat: number
+  lng: number
+}
+
+export type GetFountainResponse = AddFountainResponse & {
+  stars: number
+}
+
+export type VoteFountainResponse = {
+  fountainId: number
+  stars: number
+}

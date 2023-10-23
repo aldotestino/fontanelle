@@ -8,4 +8,5 @@ type User struct {
 	Surname  string
 	Email    string `gorm:"unique"`
 	Password string
+	Votes    []Vote
 }

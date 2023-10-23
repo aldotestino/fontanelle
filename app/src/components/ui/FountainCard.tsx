@@ -7,7 +7,7 @@ import ReportFountainModal from '../ReportFountainModal';
 import VoteFountainModal from '../VoteFountainModal';
 import { useUserStore } from '../../stores/userStore';
 
-function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainResponse) {
+function FountainCard({ id, name, isFree, street, lat, lng, stars }: GetFountainResponse) {
 
   const toast = useToast();
 
@@ -55,9 +55,9 @@ function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainRespons
           <HStack minH={10} w="full" justifyContent="space-between">
             <HStack spacing={0}>
               {Array.from({ length: 5 }, (_, i) => (
-                <Icon key={i} as={i < 4 ? StarIconFull : StarIcon} w={6} h={6} color={i < 4 ? 'yellow.500' : 'slate.500'} />
+                <Icon key={i} as={i < Math.floor(stars) ? StarIconFull : StarIcon} w={6} h={6} color={i < Math.floor(stars) ? 'yellow.500' : 'slate.500'} />
               ))}
-              <Text ml={1} color="slate.500">4.3</Text>
+              <Text ml={1} color="slate.500">{stars.toFixed(1)}</Text>
             </HStack>
             <Menu placement="top-end" closeOnSelect={false}>
               <MenuButton

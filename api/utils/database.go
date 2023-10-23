@@ -53,20 +53,5 @@ func ConnectDatabase() {
 }
 
 func MigrateDatabase() {
-
-	DB.AutoMigrate(&models.User{}, &models.Fountain{})
-
-	// Add unique constraint to lat and lng if not exists
-	var constraint_exists bool
-	tx := DB.Raw("SELECT EXISTS (SELECT 1  FROM pg_constraint WHERE conname = 'unique_lat_lng')").Scan(&constraint_exists)
-	if tx.Error != nil {
-		panic("Failed to check if constraint exists: " + tx.Error.Error())
-	}
-
-	if !constraint_exists {
-		if err := DB.Exec("ALTER TABLE fountains ADD CONSTRAINT unique_lat_lng UNIQUE (lat, lng)").Error; err != nil {
-			panic("Failed to create the constraint: " + err.Error())
-		}
-	}
-
+	DB.AutoMigrate(&models.User{}, &models.Fountain{}, &models.Vote{})
 }

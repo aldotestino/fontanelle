@@ -1,9 +1,9 @@
 import { HStack, Heading, Icon, VStack, Text } from '@chakra-ui/react';
-import { GetFountainResponse } from '../../utils/types';
+import {  GetUserFountainResponse } from '../../utils/types';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link as RLink } from 'react-router-dom';
 
-function UserFountainCard({ id, name, street }: GetFountainResponse) {
+function UserFountainCard({ id, name, street }: GetUserFountainResponse) {
   return (
     <HStack cursor="pointer" as={RLink} to={`/?fountainId=${id}`} w="full" bg="slate.50" border="1px" borderColor="slate.100" rounded="2xl" shadow="sm" p={4} justifyContent="space-between">
       <VStack alignItems="start">
