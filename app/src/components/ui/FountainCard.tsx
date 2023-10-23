@@ -7,7 +7,7 @@ import ReportFountainModal from '../ReportFountainModal';
 import VoteFountainModal from '../VoteFountainModal';
 import { useUserStore } from '../../stores/userStore';
 
-function FountainCard({ id, name, isFree, street, lat, lng, stars }: GetFountainResponse) {
+function FountainCard({ id, name, isFree, street, lat, lng, stars = 0 }: GetFountainResponse) {
 
   const toast = useToast();
 
