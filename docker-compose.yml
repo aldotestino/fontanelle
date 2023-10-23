@@ -46,7 +46,7 @@ services:
     container_name: db
     restart: always
     volumes:
-      - ./database-data:/var/lib/postgresql/data/
+      - ./database-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -55,3 +55,4 @@ services:
 
 volumes:
   database-data:
+    name: fontanelle

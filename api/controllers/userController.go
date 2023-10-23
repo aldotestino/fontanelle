@@ -41,12 +41,6 @@ func Signup(c *gin.Context) {
 }
 
 func Signin(c *gin.Context) {
-	presentTokenString, _ := c.Cookie("token")
-	if presentTokenString != "" {
-		utils.ApiError(c, http.StatusNotAcceptable, "Already signed in")
-		return
-	}
-
 	var body validators.SigninRequestBody
 
 	if !utils.BindAndValidateBody(c, &body) {
