@@ -1,5 +1,5 @@
 import { GetFountainResponse } from '../../utils/types';
-import { Box, Badge, HStack, Heading, Text, VStack, Icon, Button, IconButton, MenuItem, MenuList, Menu, MenuButton, useDisclosure } from '@chakra-ui/react';
+import { Box, Badge, HStack, Heading, Text, VStack, Icon, Button, IconButton, MenuItem, MenuList, Menu, MenuButton, useDisclosure, useToast } from '@chakra-ui/react';
 import { PRIMARY_COLOR } from '../../utils/theme';
 import { EllipsisVerticalIcon, ExclamationTriangleIcon, ShareIcon, StarIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconFull } from '@heroicons/react/24/solid';
@@ -8,6 +8,8 @@ import VoteFountainModal from '../VoteFountainModal';
 import { useUserStore } from '../../stores/userStore';
 
 function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainResponse) {
+
+  const toast = useToast();
 
   const { isAuth } = useUserStore();
 
@@ -19,15 +21,26 @@ function FountainCard({ id, name, isFree, street, lat, lng }: GetFountainRespons
   }
 
   async function onShare() {
-    try {
-      await navigator.share({
-        title: 'Fontanelle',
-        text: `Scopri la fontana ${name}!`,
-        url: window.location.href,
+
+    const dataToShare: ShareData = {
+      title: 'Fontanelle',
+      text: `Scopri la fontana "${name}"!`,
+      url: `${window.location.origin}/?fountainId=${id}`
+    };
+
+    if(navigator.share && navigator.canShare(dataToShare)){
+      await navigator.share(dataToShare);
+    }else {
+      await navigator.clipboard.writeText(dataToShare.url!);
+      toast({
+        variant: 'subtle',
+        position: 'top-right',
+        title: 'Condividi',
+        description: 'URL copiato negli appunti.',
+        status: 'info',
+        isClosable: true
       });
-    } catch(err) {
-      console.error(err);
-    } 
+    }
   }
 
   return (
