@@ -1,12 +1,21 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Vote struct {
-	gorm.Model
-	FountainID uint `gorm:"uniqueIndex:idx_user_vote_fountain"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+
+	FountainID uint `gorm:"primaryKey"`
 	Fountain   Fountain
-	UserID     uint `gorm:"uniqueIndex:idx_user_vote_fountain"`
-	User       User
-	Stars      uint8
+
+	UserID uint `gorm:"primaryKey"`
+	User   User
+
+	Stars uint8
 }

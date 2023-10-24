@@ -23,8 +23,7 @@ func GetFountains(c *gin.Context) {
 	}
 
 	var fountains []FountainSelect
-
-	utils.DB.Preload("Votes").Model(&models.Fountain{}).Select("fountains.*, AVG(votes.stars) as stars").Joins("left join votes on votes.fountain_id = fountains.id").Group("fountains.id").Find(&fountains)
+	utils.DB.Model(&models.Fountain{}).Select("fountains.*, AVG(votes.stars) as stars").Joins("left join votes on votes.fountain_id = fountains.id").Group("fountains.id").Find(&fountains)
 
 	c.JSON(http.StatusOK, fountains)
 }
