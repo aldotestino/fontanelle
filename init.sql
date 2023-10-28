@@ -1,0 +1,1 @@
+SELECT 'CREATE DATABASE fontanelle' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'fontanelle')\gexec

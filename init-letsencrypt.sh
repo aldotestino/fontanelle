@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker compose)" ]; then
   exit 1
 fi
 
-domains=(fontanelleapi.aldotestino.online)
+domains=(fontapi.aldotestino.online)
 rsa_key_size=4096
 data_path="./certbot"
 email="aldo.testino@libero.it" # Adding a valid address is strongly recommended

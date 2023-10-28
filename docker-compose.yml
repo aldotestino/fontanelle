@@ -5,7 +5,7 @@ services:
   api:
     build: ./api
     env_file:
-      - ./api/.env
+      - ./.env
     ports:
       - 3000:3000
     container_name: api
@@ -40,12 +40,13 @@ services:
     image: postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - 5432:5432
     container_name: db
     restart: always
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./database-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
