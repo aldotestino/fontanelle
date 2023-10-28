@@ -3,13 +3,13 @@ import Map, { MapRef, GeolocateControl, Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../styles/map.css';
 import { Location } from '../utils/types';
-import { Center, HStack, Icon, IconButton, Spinner, useDisclosure } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, Center, HStack, Icon, IconButton, Spinner, Tooltip, VStack, useDisclosure, useMediaQuery } from '@chakra-ui/react';
 import AddFountainDrawer from '../components/AddFountainDrawer';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useUserStore } from '../stores/userStore';
 import MapStyleSelector from '../components/ui/MapStyleSelector';
 import { FLY_TO_DURATION, mapStyles } from '../utils/constants';
-import { GlobeAltIcon } from '@heroicons/react/24/outline';
+import { GlobeAltIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { PRIMARY_COLOR } from '../utils/theme';
 import FountainApi from '../api/fountainApi';
 import { useQuery } from 'react-query';
@@ -26,6 +26,9 @@ function Home() {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [newFountainLocation, setNewFountainLocation] = useState<Location | null>(null);
+
+  const [isAddingFountain, setIsAddingFountain] = useState<boolean>(false);
+  const [isMobile] = useMediaQuery('(max-width: 48em)');
 
   const [isGeolocating, setIsGeolocating] = useState<boolean>(false);
   const [mapStyle, setMapStyle] = useState<string>(window.localStorage.getItem('mapStyle') || mapStyles[0].value);
@@ -80,7 +83,7 @@ function Home() {
 
   function handleOnMapClick(event: mapboxgl.MapLayerMouseEvent) {
     if(event.originalEvent.target !== mapRef.current?.getCanvas()) return;
-    if(selectedFountain === -1) handleOnOpen({ lat: event.lngLat.lat, lng: event.lngLat.lng });
+    if(selectedFountain === -1 && isAddingFountain) handleOnOpen({ lat: event.lngLat.lat, lng: event.lngLat.lng });
     else handleUnselectFountain();
   }
   
@@ -112,6 +115,7 @@ function Home() {
   }
 
   function handleSelectFountain(index: number) {
+    if(isAddingFountain) return;
     setSelectedFountain(index);
     setPrevZoom(mapRef.current?.getZoom() || 14);
     mapRef.current?.flyTo({
@@ -152,7 +156,7 @@ function Home() {
       >
         {data && data.map((fountain, i) => (
           <Marker onClick={() => handleSelectFountain(i)} key={fountain.id} longitude={fountain.lng} latitude={fountain.lat}>
-            <Icon as={MapPinIcon} w={9} h={9} color={i === selectedFountain ? 'indigo.600' : fountain.isFree ? 'blue.600' : 'green.600'} />
+            <Icon as={MapPinIcon} w={9} h={9} color={i === selectedFountain ? `${PRIMARY_COLOR}.600` : fountain.isFree ? 'blue.600' : 'green.600'} />
           </Marker>
         ))}
 
@@ -165,11 +169,31 @@ function Home() {
         <GeolocateControl onGeolocate={() => setIsGeolocating(false)} ref={geoControlRef} style={{ display: 'none' }} />
       </Map>
 
-      <HStack position="fixed" top={4} right={4}>
-        <IconButton color={`${PRIMARY_COLOR}.600`} isLoading={isGeolocating} aria-label='geolocate' onClick={handleGeolocate} icon={<Icon as={GlobeAltIcon} w={6} h={6} />} />
-        <MapStyleSelector mapStyle={mapStyle} setMapStyle={handleSetMapStyle} />
-      </HStack>
-
+      <VStack position="fixed" top={0} pt={4} px={4} w="full">
+        <HStack w="full" justifyContent="end" alignItems="start">
+          {(isAddingFountain && !isMobile) && 
+          <Alert variant="subtle" borderRadius="lg" status="info">
+            <AlertIcon />
+            <AlertDescription>Premi un punto sulla mappa per aggiungere una fontanella</AlertDescription>
+          </Alert>
+          }
+          <Tooltip label='Trova la mia posizione'>
+            <IconButton color={`${PRIMARY_COLOR}.600`} isLoading={isGeolocating} aria-label='geolocate' onClick={handleGeolocate} icon={<Icon as={GlobeAltIcon} w={6} h={6} />} />
+          </Tooltip>
+          <Tooltip label={isAddingFountain ? 'Seleziona fonatanella' : 'Aggiungi fontanella'}>
+            <IconButton color={isAddingFountain ? `${PRIMARY_COLOR}.600` : 'slate.900'} aria-label='add fountain' onClick={() => setIsAddingFountain(pv => !pv)} icon={<Icon as={PlusCircleIcon} w={6} h={6} />} />
+          </Tooltip>
+          <MapStyleSelector mapStyle={mapStyle} setMapStyle={handleSetMapStyle} />
+        </HStack>
+        
+        {(isAddingFountain && isMobile) &&
+          <Alert variant="subtle" borderRadius="lg" status="info">
+            <AlertIcon />
+            <AlertDescription>Premi un punto sulla mappa per aggiungere una fontanella</AlertDescription>
+          </Alert>
+        }
+      </VStack>
+    
       {(data && selectedFountain !== -1) && 
         <FountainCard {...data[selectedFountain]} />
       }

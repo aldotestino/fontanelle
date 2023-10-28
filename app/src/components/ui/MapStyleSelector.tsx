@@ -13,7 +13,7 @@ function MapStyleSelector({ mapStyle, setMapStyle }: MapStyleSelectorProps) {
       <MenuButton as={IconButton} icon={<Icon color="slate.900" as={AdjustmentsHorizontalIcon} w={6} h={6} />} aria-label="map style" />
       <MenuList>
         <MenuOptionGroup
-          title='Map Style'
+          title='Stile mappa'
           value={mapStyle}
           onChange={value => setMapStyle(value as string)}
           type='radio'
