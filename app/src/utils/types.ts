@@ -29,14 +29,22 @@ export type AddFountainResponse = GetUserFountainResponse & {
   lng: number
 }
 
+export const reportReasons = [
+  'Mancanza di manutenzione',
+  'Qualità dell\'acqua compromessa',
+  'Rotture o danni strutturali',
+  'Accesso limitato o insufficiente',
+  'Mancanza di igiene e pulizia'
+] as const;
+
 export type GetFountainResponse = AddFountainResponse & {
   stars: number
   reports: {
-    '1': number
-    '2': number
-    '3': number
-    '4': number
-    '5': number
+    1: number,
+    2: number,
+    3: number,
+    4: number,
+    5: number
   }
 }
 
@@ -47,6 +55,6 @@ export type VoteFountainResponse = {
 
 export type ReportFountainResponse = {
   fountainId: number
-  reason: number
+  reason: keyof GetFountainResponse['reports']
 }
 
