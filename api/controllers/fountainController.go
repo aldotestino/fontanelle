@@ -12,18 +12,37 @@ import (
 
 func GetFountains(c *gin.Context) {
 
+	type ReportsCount struct {
+		One   uint `json:"1"`
+		Two   uint `json:"2"`
+		Three uint `json:"3"`
+		Four  uint `json:"4"`
+		Five  uint `json:"5"`
+	}
+
 	type FountainSelect struct {
-		ID     uint    `json:"id"`
-		Lat    float64 `json:"lat"`
-		Lng    float64 `json:"lng"`
-		Street string  `json:"street"`
-		Name   string  `json:"name"`
-		IsFree bool    `json:"isFree"`
-		Stars  float64 `json:"stars"`
+		ID      uint         `json:"id"`
+		Lat     float64      `json:"lat"`
+		Lng     float64      `json:"lng"`
+		Street  string       `json:"street"`
+		Name    string       `json:"name"`
+		IsFree  bool         `json:"isFree"`
+		Stars   float64      `json:"stars"`
+		Reports ReportsCount `json:"reports" gorm:"embedded"`
 	}
 
 	var fountains []FountainSelect
-	utils.DB.Model(&models.Fountain{}).Select("fountains.*, AVG(votes.stars) as stars").Joins("left join votes on votes.fountain_id = fountains.id").Group("fountains.id").Find(&fountains)
+	utils.DB.Model(&models.Fountain{}).
+		Select("fountains.*, AVG(v.stars) as stars, " +
+			"COUNT(CASE WHEN r.reason = 1 THEN 1 END) as one, " +
+			"COUNT(CASE WHEN r.reason = 2 THEN 1 END) as two, " +
+			"COUNT(CASE WHEN r.reason = 3 THEN 1 END) as three," +
+			"COUNT(CASE WHEN r.reason = 4 THEN 1 END) as four," +
+			"COUNT(CASE WHEN r.reason = 5 THEN 1 END) as five").
+		Joins("LEFT JOIN votes v ON fountains.id = v.fountain_id").
+		Joins("LEFT JOIN reports r ON fountains.id = r.fountain_id").
+		Group("fountains.id").
+		Find(&fountains)
 
 	c.JSON(http.StatusOK, fountains)
 }
