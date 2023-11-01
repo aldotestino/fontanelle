@@ -9,5 +9,6 @@ type User struct {
 	Email    string `gorm:"unique"`
 	Password string
 
-	Votes []Vote
+	Votes   []Vote
+	Reports []Report
 }

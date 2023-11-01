@@ -89,6 +89,48 @@ func VoteFountain(c *gin.Context) {
 	})
 }
 
+func ReportFountain(c *gin.Context) {
+	fountainIDString := c.Query("fountainId")
+
+	if fountainIDString == "" {
+		utils.ApiError(c, http.StatusBadRequest, "Missing fountainId")
+		return
+	}
+
+	fountainID, err := strconv.ParseUint(fountainIDString, 10, 32)
+
+	if err != nil {
+		utils.ApiError(c, http.StatusBadRequest, "Invalid fountainId")
+		return
+	}
+
+	var body validators.ReportFountainRequestBody
+
+	if !utils.BindAndValidateBody(c, &body) {
+		return
+	}
+
+	user := c.Keys["user"].(models.User)
+
+	report := models.Report{
+		FountainID: uint(fountainID),
+		UserID:     user.ID,
+		Reason:     body.Reason,
+	}
+
+	result := utils.DB.Create(&report)
+
+	if result.Error != nil {
+		utils.ApiError(c, http.StatusConflict, "You already reported for the same reason this fountain")
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"fountainId": fountainID,
+		"reason":     body.Reason,
+	})
+}
+
 func AddFountain(c *gin.Context) {
 	var body validators.AddFountainRequestBody
 

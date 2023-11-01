@@ -13,5 +13,6 @@ type Fountain struct {
 	UserID uint
 	User   User
 
-	Votes []Vote
+	Votes   []Vote
+	Reports []Report
 }
