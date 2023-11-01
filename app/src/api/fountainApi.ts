@@ -1,5 +1,5 @@
 import { client } from '.';
-import { AddFountainResponse, AddFountainSchema, GetFountainResponse, GetUserFountainResponse, VoteFountainResponse } from '../utils/types';
+import { AddFountainResponse, AddFountainSchema, GetFountainResponse, GetUserFountainResponse, ReportFountainResponse, VoteFountainResponse } from '../utils/types';
 
 class FountainApi {
   static endpoint = '/fountain';
@@ -14,6 +14,15 @@ class FountainApi {
   static async voteFountain(values: { fountainId: number, stars: number }): Promise<VoteFountainResponse> {
     const { data } = await client.post(`${FountainApi.endpoint}/vote?fountainId=${values.fountainId}`, {
       stars: values.stars
+    }, {
+      withCredentials: true
+    });
+    return data;
+  }
+
+  static async reportFountain(values: { fountainId: number, reason: number }): Promise<ReportFountainResponse> {
+    const { data } = await client.post(`${FountainApi.endpoint}/report?fountainId=${values.fountainId}`, {
+      reason: values.reason
     }, {
       withCredentials: true
     });

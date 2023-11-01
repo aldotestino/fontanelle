@@ -31,9 +31,18 @@ export type AddFountainResponse = GetUserFountainResponse & {
 
 export type GetFountainResponse = AddFountainResponse & {
   stars: number
+  reports: {
+    [key: number]: number
+  }
 }
 
 export type VoteFountainResponse = {
   fountainId: number
   stars: number
 }
+
+export type ReportFountainResponse = {
+  fountainId: number
+  reason: number
+}
+

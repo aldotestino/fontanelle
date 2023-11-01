@@ -20,6 +20,12 @@ export const addPartialFountainSchema = z.object({
   isFree: z.coerce.number().int().min(0).max(1),
 });
 
+export const reportPartialFountainSchema = z.object({
+  reason: z.coerce.number().min(1).max(5)
+});
+
+
 export type SigninSchema = z.infer<typeof signinSchema>
 export type SignupSchema = z.infer<typeof signupSchema>
 export type AddPartialFountainSchema = z.infer<typeof addPartialFountainSchema>
+export type ReportPartialFountainSchema = z.infer<typeof reportPartialFountainSchema>
