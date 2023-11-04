@@ -14,7 +14,7 @@ import { PRIMARY_COLOR } from '../utils/theme';
 import FountainApi from '../api/fountainApi';
 import { useQuery } from 'react-query';
 import mapboxgl from 'mapbox-gl';
-import FountainCard from '../components/ui/FountainCard';
+import FountainCard from '../components/FountainCard';
 import { useLocation } from 'react-router-dom';
 
 function Home() {
@@ -61,7 +61,7 @@ function Home() {
       mapRef.current?.flyTo({
         duration: FLY_TO_DURATION,
         center: [data![selectedFountain].lng, data![selectedFountain].lat],
-        offset: [0, -100],
+        offset: [0, -200],
         zoom: 20,
       });
     }
@@ -181,7 +181,7 @@ function Home() {
             <IconButton color={`${PRIMARY_COLOR}.600`} isLoading={isGeolocating} aria-label='geolocate' onClick={handleGeolocate} icon={<Icon as={GlobeAltIcon} w={6} h={6} />} />
           </Tooltip>
           <Tooltip label={isAddingFountain ? 'Seleziona fonatanella' : 'Aggiungi fontanella'}>
-            <IconButton color={isAddingFountain ? `${PRIMARY_COLOR}.600` : 'slate.900'} aria-label='add fountain' onClick={() => setIsAddingFountain(pv => !pv)} icon={<Icon as={PlusCircleIcon} w={6} h={6} />} />
+            <IconButton isDisabled={selectedFountain !== -1} color={isAddingFountain ? `${PRIMARY_COLOR}.600` : 'slate.900'} aria-label='add fountain' onClick={() => setIsAddingFountain(pv => !pv)} icon={<Icon as={PlusCircleIcon} w={6} h={6} />} />
           </Tooltip>
           <MapStyleSelector mapStyle={mapStyle} setMapStyle={handleSetMapStyle} />
         </HStack>

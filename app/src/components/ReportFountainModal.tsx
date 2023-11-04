@@ -31,7 +31,6 @@ function ReportFountainModal({ onClose, isOpen, id, name }: ReportFountainModalP
       onClose();
     },
     onSuccess: (data) => {
-      console.log(data);
       const fountainsCache = queryClient.getQueryData<GetFountainResponse[]>(['fountains']);
       if(fountainsCache) {
         const newFountainsCache = fountainsCache.map(fountain => {

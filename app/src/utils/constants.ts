@@ -17,3 +17,11 @@ export const mapStyles = [{
 }] as const;
 
 export const FLY_TO_DURATION = 2000;
+
+export const reportReasons = [
+  'Mancanza di manutenzione',
+  'Qualità dell\'acqua compromessa',
+  'Rotture o danni strutturali',
+  'Accesso limitato o insufficiente',
+  'Mancanza di igiene e pulizia'
+] as const;

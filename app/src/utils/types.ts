@@ -29,14 +29,6 @@ export type AddFountainResponse = GetUserFountainResponse & {
   lng: number
 }
 
-export const reportReasons = [
-  'Mancanza di manutenzione',
-  'Qualità dell\'acqua compromessa',
-  'Rotture o danni strutturali',
-  'Accesso limitato o insufficiente',
-  'Mancanza di igiene e pulizia'
-] as const;
-
 export type GetFountainResponse = AddFountainResponse & {
   stars: number
   reports: {
