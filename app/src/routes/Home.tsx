@@ -180,9 +180,9 @@ function Home() {
           <Tooltip label='Trova la mia posizione'>
             <IconButton color={`${PRIMARY_COLOR}.600`} isLoading={isGeolocating} aria-label='geolocate' onClick={handleGeolocate} icon={<Icon as={GlobeAltIcon} w={6} h={6} />} />
           </Tooltip>
-          <Tooltip label={isAddingFountain ? 'Seleziona fonatanella' : 'Aggiungi fontanella'}>
+          {isAuth && <Tooltip label={isAddingFountain ? 'Seleziona fonatanella' : 'Aggiungi fontanella'}>
             <IconButton isDisabled={selectedFountain !== -1} color={isAddingFountain ? `${PRIMARY_COLOR}.600` : 'slate.900'} aria-label='add fountain' onClick={() => setIsAddingFountain(pv => !pv)} icon={<Icon as={PlusCircleIcon} w={6} h={6} />} />
-          </Tooltip>
+          </Tooltip>}
           <MapStyleSelector mapStyle={mapStyle} setMapStyle={handleSetMapStyle} />
         </HStack>
         
