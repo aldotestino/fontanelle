@@ -13,6 +13,52 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func GoogleOAuth(c *gin.Context) {
+	code := c.Query("code")
+
+	if code == "" {
+		utils.ApiError(c, http.StatusUnauthorized, "Authorization code not provided")
+		return
+	}
+
+	tokenRes, err := utils.GetGoogleOauthToken(code)
+	if err != nil {
+		utils.ApiError(c, http.StatusBadGateway, err.Error())
+		return
+	}
+
+	googleUser, err := utils.GetGoogleUser(tokenRes.AccessToken, tokenRes.IdToken)
+	if err != nil {
+		utils.ApiError(c, http.StatusBadGateway, err.Error())
+		return
+	}
+
+	user := models.User{Name: googleUser.GivenName, Surname: googleUser.FamilyName, Email: googleUser.Email, Picture: googleUser.Picture, Provider: "google"}
+
+	result := utils.DB.FirstOrCreate(&user, "email = ?", user.Email)
+	if result.Error != nil {
+		utils.ApiError(c, http.StatusInternalServerError, "Something bad happened")
+		return
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":  user.ID,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+
+	if err != nil {
+		utils.ApiError(c, http.StatusInternalServerError, "Something bad happened")
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("token", tokenString, 3600*24*30, "", os.Getenv("APP_URL"), os.Getenv("GIN_MODE") == "release", true)
+
+	c.Redirect(http.StatusTemporaryRedirect, os.Getenv("APP_URL"))
+}
+
 func Signup(c *gin.Context) {
 	var body validators.SignupRequestBody
 
@@ -27,7 +73,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	user := models.User{Name: body.Name, Surname: body.Surname, Email: body.Email, Password: string(hash)}
+	user := models.User{Name: body.Name, Surname: body.Surname, Email: body.Email, Password: string(hash), Provider: "local"}
 	result := utils.DB.Create(&user)
 
 	if result.Error != nil {
@@ -75,7 +121,7 @@ func Signin(c *gin.Context) {
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("token", tokenString, 3600*24*30, "", os.Getenv("APP_URL"), os.Getenv("PRODUCTION") == "true", true)
+	c.SetCookie("token", tokenString, 3600*24*30, "", os.Getenv("APP_URL"), os.Getenv("GIN_MODE") == "release", true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"name":    user.Name,
@@ -91,6 +137,7 @@ func Me(c *gin.Context) {
 		"name":    user.Name,
 		"surname": user.Surname,
 		"email":   user.Email,
+		"picture": user.Picture,
 	})
 }
 

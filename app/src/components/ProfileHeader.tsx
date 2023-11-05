@@ -28,7 +28,7 @@ function ProfileHeader() {
     <VStack w="full" alignItems="start">
       <HStack w="full" justifyContent="space-between">
         <HStack alignItems="end">
-          <Avatar name={`${user?.name} ${user?.surname}`} src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user?.name}${user?.surname}&radius=50&backgroundColor=c0aede`} size="md" />
+          <Avatar name={`${user?.name} ${user?.surname}`} src={user?.picture || `https://api.dicebear.com/7.x/notionists/svg?seed=${user?.name}${user?.surname}&radius=50&backgroundColor=c0aede`} size="md" />
           <Heading size="xl">Ciao, {user?.name}</Heading>
         </HStack>
           

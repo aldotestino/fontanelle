@@ -1,4 +1,4 @@
-.env
+.env.local
 
 # Editor directories and files
 .vscode/*
