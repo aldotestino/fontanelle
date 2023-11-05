@@ -54,7 +54,7 @@ func GoogleOAuth(c *gin.Context) {
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("token", tokenString, 3600*24*30, "", os.Getenv("APP_URL"), os.Getenv("PRODUCTION") == "true", true)
+	c.SetCookie("token", tokenString, 3600*24*30, "", os.Getenv("APP_URL"), os.Getenv("GIN_MODE") == "release", true)
 
 	c.Redirect(http.StatusTemporaryRedirect, os.Getenv("APP_URL"))
 }
@@ -121,7 +121,7 @@ func Signin(c *gin.Context) {
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("token", tokenString, 3600*24*30, "", os.Getenv("APP_URL"), os.Getenv("PRODUCTION") == "true", true)
+	c.SetCookie("token", tokenString, 3600*24*30, "", os.Getenv("APP_URL"), os.Getenv("GIN_MODE") == "release", true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"name":    user.Name,
