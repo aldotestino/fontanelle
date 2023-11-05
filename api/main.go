@@ -29,6 +29,7 @@ func main() {
 
 	user := r.Group("/api/v1/user")
 	{
+		user.GET("/google", controllers.GoogleOAuth)
 		user.POST("/signup", controllers.Signup)
 		user.POST("/signin", controllers.Signin)
 		user.GET("/me", middlewares.RequireAuth, controllers.Me)
