@@ -172,7 +172,7 @@ function Home() {
       <VStack position="fixed" top={0} pt={4} px={4} w="full">
         <HStack w="full" justifyContent="end" alignItems="start">
           {(isAddingFountain && !isMobile) && 
-          <Alert variant="subtle" borderRadius="lg" status="info">
+          <Alert maxW="lg" variant="subtle" borderRadius="lg" status="info">
             <AlertIcon />
             <AlertDescription>Premi un punto sulla mappa per aggiungere una fontanella</AlertDescription>
           </Alert>
