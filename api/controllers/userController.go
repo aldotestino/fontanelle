@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func GoogleOAuth(c *gin.Context) {
@@ -35,7 +36,8 @@ func GoogleOAuth(c *gin.Context) {
 
 	user := models.User{Name: googleUser.GivenName, Surname: googleUser.FamilyName, Email: googleUser.Email, Picture: googleUser.Picture, Provider: "google"}
 
-	result := utils.DB.FirstOrCreate(&user, "email = ?", user.Email)
+	db := c.MustGet("DB").(*gorm.DB)
+	result := db.FirstOrCreate(&user, "email = ?", user.Email)
 	if result.Error != nil {
 		utils.ApiError(c, http.StatusInternalServerError, "Something bad happened")
 		return
@@ -74,7 +76,8 @@ func Signup(c *gin.Context) {
 	}
 
 	user := models.User{Name: body.Name, Surname: body.Surname, Email: body.Email, Password: string(hash), Provider: "local"}
-	result := utils.DB.Create(&user)
+	db := c.MustGet("DB").(*gorm.DB)
+	result := db.Create(&user)
 
 	if result.Error != nil {
 		utils.ApiError(c, http.StatusConflict, "Email already in use")
@@ -94,7 +97,8 @@ func Signin(c *gin.Context) {
 	}
 
 	var user models.User
-	utils.DB.First(&user, "email = ?", body.Email)
+	db := c.MustGet("DB").(*gorm.DB)
+	db.First(&user, "email = ?", body.Email)
 
 	if user.ID == 0 {
 		utils.ApiError(c, http.StatusNotFound, "Invalid email or password")

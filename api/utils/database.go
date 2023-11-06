@@ -9,10 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func ConnectDatabase() {
-	var err error
+func ConnectDatabase() (*gorm.DB, error) {
 
 	conn_str := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
@@ -21,13 +18,9 @@ func ConnectDatabase() {
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_PORT"),
 	)
-	DB, err = gorm.Open(postgres.Open(conn_str), &gorm.Config{})
-
-	if err != nil {
-		panic("Failed to connect to Database")
-	}
+	return gorm.Open(postgres.Open(conn_str), &gorm.Config{})
 }
 
-func MigrateDatabase() {
+func MigrateDatabase(DB *gorm.DB) {
 	DB.AutoMigrate(&models.User{}, &models.Fountain{}, &models.Vote{}, &models.Report{})
 }

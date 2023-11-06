@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func GetFountains(c *gin.Context) {
@@ -32,7 +33,8 @@ func GetFountains(c *gin.Context) {
 	}
 
 	var fountains []FountainSelect
-	utils.DB.Model(&models.Fountain{}).
+	db := c.MustGet("DB").(*gorm.DB)
+	db.Model(&models.Fountain{}).
 		Select("fountains.*, AVG(v.stars) as stars, " +
 			"COUNT(CASE WHEN r.reason = 1 THEN 1 END) as one, " +
 			"COUNT(CASE WHEN r.reason = 2 THEN 1 END) as two, " +
@@ -57,7 +59,8 @@ func GetUserFountains(c *gin.Context) {
 	}
 
 	var fountains []FountainSelect
-	utils.DB.Model(&models.Fountain{}).Where("user_id = ?", user.ID).Find(&fountains)
+	db := c.MustGet("DB").(*gorm.DB)
+	db.Model(&models.Fountain{}).Where("user_id = ?", user.ID).Find(&fountains)
 
 	c.JSON(http.StatusOK, fountains)
 }
@@ -91,7 +94,8 @@ func VoteFountain(c *gin.Context) {
 		UserID:     user.ID,
 		Stars:      body.Stars,
 	}
-	result := utils.DB.Create(&vote)
+	db := c.MustGet("DB").(*gorm.DB)
+	result := db.Create(&vote)
 
 	if result.Error != nil {
 		utils.ApiError(c, http.StatusConflict, "You already voted for this fountain")
@@ -100,7 +104,7 @@ func VoteFountain(c *gin.Context) {
 
 	// calculate new stars
 	var stars float64
-	utils.DB.Model(&models.Vote{}).Select("AVG(votes.stars) as stars").Where("fountain_id = ?", fountainID).Scan(&stars)
+	db.Model(&models.Vote{}).Select("AVG(votes.stars) as stars").Where("fountain_id = ?", fountainID).Scan(&stars)
 
 	c.JSON(http.StatusCreated, gin.H{
 		"fountainId": fountainID,
@@ -136,8 +140,8 @@ func ReportFountain(c *gin.Context) {
 		UserID:     user.ID,
 		Reason:     body.Reason,
 	}
-
-	result := utils.DB.Create(&report)
+	db := c.MustGet("DB").(*gorm.DB)
+	result := db.Create(&report)
 
 	if result.Error != nil {
 		utils.ApiError(c, http.StatusConflict, "You already reported for the same reason this fountain")
@@ -167,7 +171,8 @@ func AddFountain(c *gin.Context) {
 		Street: body.Street,
 		UserID: user.ID,
 	}
-	result := utils.DB.Create(&fountain)
+	db := c.MustGet("DB").(*gorm.DB)
+	result := db.Create(&fountain)
 
 	if result.Error != nil {
 		utils.ApiError(c, http.StatusConflict, "Fountain in this location already exists")

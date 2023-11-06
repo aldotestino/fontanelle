@@ -9,14 +9,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	cors "github.com/rs/cors/wrapper/gin"
+	"gorm.io/gorm"
 )
+
+var DB *gorm.DB
 
 func init() {
 	if os.Getenv("GIN_MODE") != gin.ReleaseMode {
 		utils.GetEnvConfig()
 	}
-	utils.ConnectDatabase()
-	utils.MigrateDatabase()
+	var err error
+	DB, err = utils.ConnectDatabase()
+	if err != nil {
+		panic("Failed to connect to database")
+	}
+	utils.MigrateDatabase(DB)
 }
 
 func main() {
@@ -26,6 +33,8 @@ func main() {
 		AllowedOrigins:   []string{os.Getenv("APP_URL")},
 		AllowCredentials: true,
 	}))
+
+	r.Use(middlewares.SetDB(DB))
 
 	user := r.Group("/api/v1/user")
 	{

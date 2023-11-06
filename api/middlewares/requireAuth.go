@@ -3,13 +3,13 @@ package middlewares
 import (
 	"fmt"
 	"fontanelle-api/models"
-	"fontanelle-api/utils"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/gorm"
 )
 
 func RequireAuth(c *gin.Context) {
@@ -40,7 +40,8 @@ func RequireAuth(c *gin.Context) {
 		}
 
 		var user models.User
-		utils.DB.First(&user, claims["id"])
+		db := c.MustGet("DB").(*gorm.DB)
+		db.First(&user, claims["id"])
 
 		if user.ID == 0 {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
