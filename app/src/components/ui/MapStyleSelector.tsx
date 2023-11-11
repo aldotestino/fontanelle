@@ -11,7 +11,7 @@ function MapStyleSelector({ mapStyle, setMapStyle }: MapStyleSelectorProps) {
   return (
     <Menu closeOnSelect={false}>
       <MenuButton as={IconButton} icon={<Icon color="slate.900" as={AdjustmentsHorizontalIcon} w={6} h={6} />} aria-label="map style" />
-      <MenuList>
+      <MenuList borderRadius="lg" p={2}>
         <MenuOptionGroup
           title='Stile mappa'
           value={mapStyle}
@@ -19,7 +19,7 @@ function MapStyleSelector({ mapStyle, setMapStyle }: MapStyleSelectorProps) {
           type='radio'
         >
           {mapStyles.map((style, index) => (
-            <MenuItemOption key={index} value={style.value}>
+            <MenuItemOption p={2} borderRadius="md" _focus={{ bg: 'slate.100' }} key={index} value={style.value}>
               <HStack>
                 <Avatar size="xs" src={style.image} />
                 <Text>{style.label}</Text>

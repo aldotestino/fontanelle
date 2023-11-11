@@ -2,20 +2,19 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import Map, { MapRef, GeolocateControl, Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../styles/map.css';
-import { Location } from '../utils/types';
-import { Alert, AlertDescription, AlertIcon, Center, HStack, Icon, IconButton, Spinner, Tooltip, VStack, useDisclosure, useMediaQuery } from '@chakra-ui/react';
+import { Location, SearchOption } from '../utils/types';
+import { Center, Icon, Spinner, useDisclosure } from '@chakra-ui/react';
 import AddFountainDrawer from '../components/AddFountainDrawer';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useUserStore } from '../stores/userStore';
-import MapStyleSelector from '../components/ui/MapStyleSelector';
 import { FLY_TO_DURATION, mapStyles } from '../utils/constants';
-import { GlobeAltIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { PRIMARY_COLOR } from '../utils/theme';
 import FountainApi from '../api/fountainApi';
 import { useQuery } from 'react-query';
 import mapboxgl from 'mapbox-gl';
 import FountainCard from '../components/FountainCard';
 import { useLocation } from 'react-router-dom';
+import MapHeader from '../components/MapHeader';
 
 function Home() {
 
@@ -28,7 +27,6 @@ function Home() {
   const [newFountainLocation, setNewFountainLocation] = useState<Location | null>(null);
 
   const [isAddingFountain, setIsAddingFountain] = useState<boolean>(false);
-  const [isMobile] = useMediaQuery('(max-width: 48em)');
 
   const [isGeolocating, setIsGeolocating] = useState<boolean>(false);
   const [mapStyle, setMapStyle] = useState<string>(window.localStorage.getItem('mapStyle') || mapStyles[0].value);
@@ -141,6 +139,14 @@ function Home() {
       </Center>
     );
   }
+
+  function onSelectLocation(location: SearchOption) {
+    mapRef.current?.flyTo({
+      duration: FLY_TO_DURATION,
+      center: [location.lng, location.lat],
+      zoom: location.placeType === 'place' ? 12 : 18
+    });
+  }
   
   return (
     <>
@@ -169,30 +175,7 @@ function Home() {
         <GeolocateControl onGeolocate={() => setIsGeolocating(false)} ref={geoControlRef} style={{ display: 'none' }} />
       </Map>
 
-      <VStack position="fixed" top={0} pt={4} px={4} w="full">
-        <HStack w="full" justifyContent="end" alignItems="start">
-          {(isAddingFountain && !isMobile) && 
-          <Alert maxW="lg" variant="subtle" borderRadius="lg" status="info">
-            <AlertIcon />
-            <AlertDescription>Premi un punto sulla mappa per aggiungere una fontanella</AlertDescription>
-          </Alert>
-          }
-          <Tooltip label='Trova la mia posizione'>
-            <IconButton color={`${PRIMARY_COLOR}.600`} isLoading={isGeolocating} aria-label='geolocate' onClick={handleGeolocate} icon={<Icon as={GlobeAltIcon} w={6} h={6} />} />
-          </Tooltip>
-          {isAuth && <Tooltip label={isAddingFountain ? 'Seleziona fonatanella' : 'Aggiungi fontanella'}>
-            <IconButton isDisabled={selectedFountain !== -1} color={isAddingFountain ? `${PRIMARY_COLOR}.600` : 'slate.900'} aria-label='add fountain' onClick={() => setIsAddingFountain(pv => !pv)} icon={<Icon as={PlusCircleIcon} w={6} h={6} />} />
-          </Tooltip>}
-          <MapStyleSelector mapStyle={mapStyle} setMapStyle={handleSetMapStyle} />
-        </HStack>
-        
-        {(isAddingFountain && isMobile) &&
-          <Alert variant="subtle" borderRadius="lg" status="info">
-            <AlertIcon />
-            <AlertDescription>Premi un punto sulla mappa per aggiungere una fontanella</AlertDescription>
-          </Alert>
-        }
-      </VStack>
+      <MapHeader handleGeolocate={handleGeolocate} isGeolocating={isGeolocating} handleSetMapStyle={handleSetMapStyle} isAddingFountain={isAddingFountain} mapStyle={mapStyle} onSelectLocation={onSelectLocation} selectedFountain={selectedFountain} setIsAddingFountain={setIsAddingFountain}  />
     
       {(data && selectedFountain !== -1) && 
         <FountainCard {...data[selectedFountain]} />

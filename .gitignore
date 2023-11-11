@@ -2,3 +2,4 @@ database-data
 .env
 certbot
 nginx
+.DS_Store

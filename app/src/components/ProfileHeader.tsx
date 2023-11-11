@@ -39,8 +39,8 @@ function ProfileHeader() {
             variant='ghost'
             icon={<Icon color="slate.900" as={Bars3Icon} w={6} h={6} />}
           />
-          <MenuList>
-            <MenuItem onClick={handleSignout} color="red.600" icon={<Icon as={ArrowLeftOnRectangleIcon} w={5} h={5} />}>Esci</MenuItem>
+          <MenuList borderRadius="lg" p={2}>
+            <MenuItem _focus={{ bg: 'slate.100' }} p={2} borderRadius="md" onClick={handleSignout} color="red.600" icon={<Icon as={ArrowLeftOnRectangleIcon} w={5} h={5} />}>Esci</MenuItem>
           </MenuList>
         </Menu>
 

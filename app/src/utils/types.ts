@@ -51,3 +51,9 @@ export type ReportFountainResponse = {
   reason: keyof GetFountainResponse['reports']
 }
 
+export type SearchOption = {
+  label: string
+  lat: number
+  lng: number
+  placeType: string
+}
