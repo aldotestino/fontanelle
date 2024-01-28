@@ -7,16 +7,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func BindAndValidateBody(c *gin.Context, body validators.ApiRequestBody) bool {
+type BindAndValidateError struct {
+	StatusCode int    `json:"status"`
+	Message    string `json:"error"`
+}
+
+func BindAndValidateBody(c *gin.Context, body validators.ApiRequestBody) *BindAndValidateError {
 	if c.Bind(body) != nil {
-		ApiError(c, http.StatusBadRequest, "Invalid body")
-		return false
+		return &BindAndValidateError{
+			StatusCode: http.StatusBadRequest,
+			Message:    "Invalid body",
+		}
 	}
 
 	if ok, message := body.Validate(); !ok {
-		ApiError(c, http.StatusBadRequest, message)
-		return false
+		return &BindAndValidateError{
+			StatusCode: http.StatusBadRequest,
+			Message:    message,
+		}
 	}
 
-	return true
+	return nil
 }

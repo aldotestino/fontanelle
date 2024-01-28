@@ -70,20 +70,27 @@ func VoteFountain(c *gin.Context) {
 	fountainIDString := c.Query("fountainId")
 
 	if fountainIDString == "" {
-		utils.ApiError(c, http.StatusBadRequest, "Missing fountainId")
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": "Missing fountainId",
+		})
 		return
 	}
 
 	fountainID, err := strconv.ParseUint(fountainIDString, 10, 32)
 
 	if err != nil {
-		utils.ApiError(c, http.StatusBadRequest, "Invalid fountainId")
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid fountainId",
+		})
 		return
 	}
 
 	var body validators.VoteFountainRequestBody
 
-	if !utils.BindAndValidateBody(c, &body) {
+	if err := utils.BindAndValidateBody(c, &body); err != nil {
+		c.AbortWithStatusJSON(err.StatusCode, gin.H{
+			"error": err.Message,
+		})
 		return
 	}
 
@@ -98,7 +105,9 @@ func VoteFountain(c *gin.Context) {
 	result := db.Create(&vote)
 
 	if result.Error != nil {
-		utils.ApiError(c, http.StatusConflict, "You already voted for this fountain")
+		c.AbortWithStatusJSON(http.StatusConflict, gin.H{
+			"error": "You already voted for this fountain",
+		})
 		return
 	}
 
@@ -116,20 +125,27 @@ func ReportFountain(c *gin.Context) {
 	fountainIDString := c.Query("fountainId")
 
 	if fountainIDString == "" {
-		utils.ApiError(c, http.StatusBadRequest, "Missing fountainId")
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": "Missing fountainId",
+		})
 		return
 	}
 
 	fountainID, err := strconv.ParseUint(fountainIDString, 10, 32)
 
 	if err != nil {
-		utils.ApiError(c, http.StatusBadRequest, "Invalid fountainId")
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid fountainId",
+		})
 		return
 	}
 
 	var body validators.ReportFountainRequestBody
 
-	if !utils.BindAndValidateBody(c, &body) {
+	if err := utils.BindAndValidateBody(c, &body); err != nil {
+		c.AbortWithStatusJSON(err.StatusCode, gin.H{
+			"error": err.Message,
+		})
 		return
 	}
 
@@ -144,7 +160,9 @@ func ReportFountain(c *gin.Context) {
 	result := db.Create(&report)
 
 	if result.Error != nil {
-		utils.ApiError(c, http.StatusConflict, "You already reported for the same reason this fountain")
+		c.AbortWithStatusJSON(http.StatusConflict, gin.H{
+			"error": "You already reported for the same reason this fountain",
+		})
 		return
 	}
 
@@ -157,7 +175,10 @@ func ReportFountain(c *gin.Context) {
 func AddFountain(c *gin.Context) {
 	var body validators.AddFountainRequestBody
 
-	if !utils.BindAndValidateBody(c, &body) {
+	if err := utils.BindAndValidateBody(c, &body); err != nil {
+		c.AbortWithStatusJSON(err.StatusCode, gin.H{
+			"error": err.Message,
+		})
 		return
 	}
 
@@ -175,7 +196,9 @@ func AddFountain(c *gin.Context) {
 	result := db.Create(&fountain)
 
 	if result.Error != nil {
-		utils.ApiError(c, http.StatusConflict, "Fountain in this location already exists")
+		c.AbortWithStatusJSON(http.StatusConflict, gin.H{
+			"error": "Fountain in this location already exists",
+		})
 		return
 	}
 

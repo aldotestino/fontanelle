@@ -18,19 +18,25 @@ func GoogleOAuth(c *gin.Context) {
 	code := c.Query("code")
 
 	if code == "" {
-		utils.ApiError(c, http.StatusUnauthorized, "Authorization code not provided")
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error": "Authorization code not provided",
+		})
 		return
 	}
 
 	tokenRes, err := utils.GetGoogleOauthToken(code)
 	if err != nil {
-		utils.ApiError(c, http.StatusBadGateway, err.Error())
+		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+			"errpr": err.Error(),
+		})
 		return
 	}
 
 	googleUser, err := utils.GetGoogleUser(tokenRes.AccessToken, tokenRes.IdToken)
 	if err != nil {
-		utils.ApiError(c, http.StatusBadGateway, err.Error())
+		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
@@ -39,7 +45,9 @@ func GoogleOAuth(c *gin.Context) {
 	db := c.MustGet("DB").(*gorm.DB)
 	result := db.FirstOrCreate(&user, "email = ?", user.Email)
 	if result.Error != nil {
-		utils.ApiError(c, http.StatusInternalServerError, "Something bad happened")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": "Something bad happened",
+		})
 		return
 	}
 
@@ -51,7 +59,9 @@ func GoogleOAuth(c *gin.Context) {
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 	if err != nil {
-		utils.ApiError(c, http.StatusInternalServerError, "Something bad happened")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": "Something bad happened",
+		})
 		return
 	}
 
@@ -64,14 +74,19 @@ func GoogleOAuth(c *gin.Context) {
 func Signup(c *gin.Context) {
 	var body validators.SignupRequestBody
 
-	if !utils.BindAndValidateBody(c, &body) {
+	if err := utils.BindAndValidateBody(c, &body); err != nil {
+		c.AbortWithStatusJSON(err.StatusCode, gin.H{
+			"error": err.Message,
+		})
 		return
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 
 	if err != nil {
-		utils.ApiError(c, http.StatusInternalServerError, "Something bad happened")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": "Something bad happened",
+		})
 		return
 	}
 
@@ -80,7 +95,9 @@ func Signup(c *gin.Context) {
 	result := db.Create(&user)
 
 	if result.Error != nil {
-		utils.ApiError(c, http.StatusConflict, "Email already in use")
+		c.AbortWithStatusJSON(http.StatusConflict, gin.H{
+			"error": "Email already in use",
+		})
 		return
 	}
 
@@ -92,7 +109,10 @@ func Signup(c *gin.Context) {
 func Signin(c *gin.Context) {
 	var body validators.SigninRequestBody
 
-	if !utils.BindAndValidateBody(c, &body) {
+	if err := utils.BindAndValidateBody(c, &body); err != nil {
+		c.AbortWithStatusJSON(err.StatusCode, gin.H{
+			"message": err.Message,
+		})
 		return
 	}
 
@@ -101,14 +121,18 @@ func Signin(c *gin.Context) {
 	db.First(&user, "email = ?", body.Email)
 
 	if user.ID == 0 {
-		utils.ApiError(c, http.StatusNotFound, "Invalid email or password")
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"error": "Invalid email or password",
+		})
 		return
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
 
 	if err != nil {
-		utils.ApiError(c, http.StatusNotFound, "Invalid email or password")
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"error": "Invalid email or password",
+		})
 		return
 	}
 
@@ -120,7 +144,9 @@ func Signin(c *gin.Context) {
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 	if err != nil {
-		utils.ApiError(c, http.StatusInternalServerError, "Something bad happened")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": "Something bad happened",
+		})
 		return
 	}
 
