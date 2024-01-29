@@ -30,13 +30,13 @@ function Signup() {
         isClosable: true,
       });
     },
-    onError: (error: AxiosError<{message: string}>) => {
+    onError: (error: AxiosError<{error: string}>) => {
       reset();
       toast({
         variant: 'subtle',
         position: 'top-right',
         title: 'Errore',
-        description: error.response?.data.message,
+        description: error.response?.data?.error,
         status: 'error',
         isClosable: true,
       });
